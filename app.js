@@ -150,7 +150,7 @@ function setupAPIKeyUI() {
         }
         setStatus("⏳ Loading account materials...", "loading");
         try {
-            const res = await fetch("https://api.guildwars2.com/v2/account/materials", {
+            const res = await fetch(`http://localhost:3000/materials?key=${key}`);
                 headers: { Authorization: `Bearer ${key}` }
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
