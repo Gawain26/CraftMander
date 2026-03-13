@@ -1,0 +1,17 @@
+body {
+  font-family: Arial;
+  margin: 40px;
+}
+
+input {
+  padding: 6px;
+  margin: 4px;
+}
+
+button {
+  padding: 6px 10px;
+}
+
+h1 {
+  color: #b48b3c;
+}
