@@ -26,8 +26,14 @@ body {
     color: #721c24;
 }
 
-/* Recipe list styling */
+/* Lists styling */
 #craftList li,
-#watchlist li {
+#watchlist li,
+#searchResults li {
     margin: 4px 0;
+    cursor: pointer;
+}
+
+#searchResults li:hover {
+    background-color: #e2e3e5;
 }
