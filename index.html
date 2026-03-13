@@ -12,46 +12,21 @@
 <!-- Status banner -->
 <div id="statusIndicator">⏳ Loading data...</div>
 
+<!-- Recipe search -->
+<div id="searchSection">
+    <input type="text" id="recipeSearch" placeholder="Search recipes by name...">
+    <button id="addRecipeBtn">Add to watchlist</button>
+</div>
+
+<!-- User watchlist -->
+<h2>Tracked Recipes</h2>
+<ul id="watchlist"></ul>
+
 <!-- Craftable recipe list -->
 <h2>Craftable Recipes</h2>
 <ul id="craftList"></ul>
 
 <!-- Main script -->
 <script src="app.js"></script>
-</body>
-</html><!DOCTYPE html>
-<html>
-<head>
-  <title>Pact CraftMander</title>
-  
-  <div id="statusIndicator">⏳ Loading data...</div>
-  
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<h1>GW2 Craftable Recipe Checker</h1>
-
-<div>
-  <input id="apikey" placeholder="Enter GW2 API key">
-  <button onclick="loadAccount()">Load Materials</button>
-</div>
-
-<hr>
-
-<div>
-  <input id="searchBox" placeholder="Search recipes">
-  <button onclick="searchRecipes()">Search</button>
-</div>
-
-<h2>Tracked Recipes</h2>
-<ul id="trackedList"></ul>
-
-<h2>Craftable Now</h2>
-<ul id="craftableList"></ul>
-
-<script src="app.js"></script>
-
 </body>
 </html>
