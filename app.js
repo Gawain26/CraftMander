@@ -113,6 +113,38 @@ function checkTrackedRecipes() {
     renderCraftable(craftable);
 }
 
+// Render search results dropdown
+function renderSearchResults(results) {
+    const ul = document.getElementById("searchResults");
+    ul.innerHTML = "";
+    results.slice(0, 10).forEach(recipe => { // limit to 10 results
+        const item = itemMap[recipe.output_item_id];
+        const li = document.createElement("li");
+        li.textContent = item ? item.name : `Item ID ${recipe.output_item_id}`;
+        li.addEventListener("click", () => {
+            addRecipeToWatchlist(recipe.id);
+            ul.innerHTML = ""; // clear results after selection
+            document.getElementById("recipeSearch").value = "";
+        });
+        ul.appendChild(li);
+    });
+}
+
+// Hook up search UI
+function setupSearchUI() {
+    const searchInput = document.getElementById("recipeSearch");
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim();
+        if (!query) {
+            document.getElementById("searchResults").innerHTML = "";
+            return;
+        }
+        const results = searchRecipeByName(query);
+        renderSearchResults(results);
+    });
+}
+
 // Load datasets
 async function loadData() {
     setStatus("⏳ Loading datasets...", "loading");
@@ -120,7 +152,7 @@ async function loadData() {
         const recipeRes = await fetch("data/recipes.json");
         recipes = await recipeRes.json();
 
-        const itemRes = await fetch("data/items.json");
+        const itemRes = await fetch("data/items.json"); // updated name
         items = await itemRes.json();
 
         buildItemMap();
@@ -138,27 +170,6 @@ async function loadData() {
         console.error(err);
         setStatus("❌ Error loading data", "error");
     }
-}
-
-// Hook up search UI
-function setupSearchUI() {
-    const searchInput = document.getElementById("recipeSearch");
-    const addBtn = document.getElementById("addRecipeBtn");
-
-    addBtn.addEventListener("click", () => {
-        const query = searchInput.value.trim();
-        if (!query) return;
-
-        const results = searchRecipeByName(query);
-        if (results.length === 0) {
-            alert("No matching recipes found");
-            return;
-        }
-
-        // Add the first matching recipe
-        addRecipeToWatchlist(results[0].id);
-        searchInput.value = "";
-    });
 }
 
 // Initialize app
