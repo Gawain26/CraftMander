@@ -120,7 +120,7 @@ async function loadData() {
         const recipeRes = await fetch("data/recipes.json");
         recipes = await recipeRes.json();
 
-        const itemRes = await fetch("data/items_pruned.json");
+        const itemRes = await fetch("data/items.json");
         items = await itemRes.json();
 
         buildItemMap();
