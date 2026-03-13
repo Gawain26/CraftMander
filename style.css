@@ -27,6 +27,7 @@ body {
 }
 
 /* Recipe list styling */
-#craftList li {
+#craftList li,
+#watchlist li {
     margin: 4px 0;
 }
