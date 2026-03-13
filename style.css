@@ -1,35 +1,32 @@
-#statusIndicator {
-  margin: 10px 0;
-  padding: 8px;
-  font-weight: bold;
-  border-radius: 6px;
+body {
+    font-family: sans-serif;
+    margin: 20px;
 }
 
+#statusIndicator {
+    margin: 10px 0;
+    padding: 8px;
+    font-weight: bold;
+    border-radius: 6px;
+}
+
+/* Status styles */
 .status-loading {
-  background: #fff3cd;
+    background: #fff3cd;
+    color: #856404;
 }
 
 .status-ok {
-  background: #d4edda;
+    background: #d4edda;
+    color: #155724;
 }
 
 .status-error {
-  background: #f8d7da;
-}
-body {
-  font-family: Arial;
-  margin: 40px;
+    background: #f8d7da;
+    color: #721c24;
 }
 
-input {
-  padding: 6px;
-  margin: 4px;
-}
-
-button {
-  padding: 6px 10px;
-}
-
-h1 {
-  color: #b48b3c;
+/* Recipe list styling */
+#craftList li {
+    margin: 4px 0;
 }
