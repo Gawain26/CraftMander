@@ -1,3 +1,21 @@
+#statusIndicator {
+  margin: 10px 0;
+  padding: 8px;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.status-loading {
+  background: #fff3cd;
+}
+
+.status-ok {
+  background: #d4edda;
+}
+
+.status-error {
+  background: #f8d7da;
+}
 body {
   font-family: Arial;
   margin: 40px;
