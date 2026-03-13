@@ -91,7 +91,8 @@ async function loadData() {
 }
 
 // Start everything
-loadData();let materials = {}
+loadData();
+materials = {}
 let trackedRecipes = []
 
 function loadAccount() {
