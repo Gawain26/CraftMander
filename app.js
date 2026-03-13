@@ -1,7 +1,7 @@
 // Global variables
-let recipes = []
-let items = []
-let itemMap = {}
+recipes = []
+items = []
+itemMap = {}
 
 // Globally accessible status function
 window.setStatus = function(message, type) {
@@ -24,13 +24,13 @@ function buildItemMap() {
 }
 
 // Minimal test inventory
-let materials = {
+materials = {
     19721: 50,
     19720: 100
 }
 
 // Hardcoded tracked recipes (replace with real IDs later)
-let trackedRecipes = [1, 2, 3]
+trackedRecipes = [1, 2, 3]
 
 // Check if a recipe can be crafted
 function canCraft(recipe) {
