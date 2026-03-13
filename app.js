@@ -1,7 +1,8 @@
 // Global variables
-recipes = []
-items = []
-itemMap = {}
+let recipes = [];
+let items = [];
+let itemMap = {};
+let watchlist = [];  // Stored as recipe IDs
 
 // Globally accessible status function
 window.setStatus = function(message, type) {
@@ -24,13 +25,61 @@ function buildItemMap() {
 }
 
 // Minimal test inventory
-materials = {
+let materials = {
     19721: 50,
     19720: 100
 }
 
-// Hardcoded tracked recipes (replace with real IDs later)
-trackedRecipes = [1, 2, 3]
+// Search recipes by name
+function searchRecipeByName(query) {
+    query = query.toLowerCase();
+    return recipes.filter(r => {
+        const item = itemMap[r.output_item_id];
+        if (!item) return false;
+        return item.name.toLowerCase().includes(query);
+    });
+}
+
+// Add recipe to watchlist
+function addRecipeToWatchlist(recipeId) {
+    if (!watchlist.includes(recipeId)) {
+        watchlist.push(recipeId);
+        saveWatchlist();
+        renderWatchlist();
+        checkTrackedRecipes();
+    }
+}
+
+// Save watchlist to localStorage
+function saveWatchlist() {
+    localStorage.setItem("craftManderWatchlist", JSON.stringify(watchlist));
+}
+
+// Load watchlist from localStorage
+function loadWatchlist() {
+    const stored = localStorage.getItem("craftManderWatchlist");
+    if (stored) {
+        try {
+            watchlist = JSON.parse(stored);
+        } catch {
+            watchlist = [];
+        }
+    }
+}
+
+// Render watchlist
+function renderWatchlist() {
+    const ul = document.getElementById("watchlist");
+    ul.innerHTML = "";
+    for (const recipeId of watchlist) {
+        const recipe = recipes.find(r => r.id === recipeId);
+        if (!recipe) continue;
+        const item = itemMap[recipe.output_item_id];
+        const li = document.createElement("li");
+        li.textContent = item ? item.name : `Item ID ${recipe.output_item_id}`;
+        ul.appendChild(li);
+    }
+}
 
 // Check if a recipe can be crafted
 function canCraft(recipe) {
@@ -41,7 +90,7 @@ function canCraft(recipe) {
     return true;
 }
 
-// Render craftable recipes to the page
+// Render craftable recipes
 function renderCraftable(list) {
     const ul = document.getElementById("craftList");
     ul.innerHTML = "";
@@ -53,15 +102,14 @@ function renderCraftable(list) {
     }
 }
 
-// Check tracked recipes and render craftable ones
+// Check tracked recipes for craftability
 function checkTrackedRecipes() {
     const craftable = [];
-    for (const recipeId of trackedRecipes) {
+    for (const recipeId of watchlist) {
         const recipe = recipes.find(r => r.id === recipeId);
         if (!recipe) continue;
         if (canCraft(recipe)) craftable.push(recipe);
     }
-    console.log("Craftable:", craftable);
     renderCraftable(craftable);
 }
 
@@ -82,7 +130,9 @@ async function loadData() {
 
         setStatus(`✅ Loaded ${recipes.length} recipes and ${items.length} items`, "ok");
 
-        checkTrackedRecipes(); // Render craftable recipes
+        loadWatchlist();
+        renderWatchlist();
+        checkTrackedRecipes();
 
     } catch (err) {
         console.error(err);
@@ -90,62 +140,27 @@ async function loadData() {
     }
 }
 
-// Start everything
+// Hook up search UI
+function setupSearchUI() {
+    const searchInput = document.getElementById("recipeSearch");
+    const addBtn = document.getElementById("addRecipeBtn");
+
+    addBtn.addEventListener("click", () => {
+        const query = searchInput.value.trim();
+        if (!query) return;
+
+        const results = searchRecipeByName(query);
+        if (results.length === 0) {
+            alert("No matching recipes found");
+            return;
+        }
+
+        // Add the first matching recipe
+        addRecipeToWatchlist(results[0].id);
+        searchInput.value = "";
+    });
+}
+
+// Initialize app
 loadData();
-materials = {}
-trackedRecipes = []
-
-function loadAccount() {
-  const key = document.getElementById("apikey").value
-  console.log("API key entered:", key)
-}
-
-function searchRecipes() {
-  const term = document.getElementById("searchBox").value
-  console.log("Searching for:", term)
-}
-
-recipes = []
-items = []
-
-function setStatus(message, type) {
-
-    const el = document.getElementById("statusIndicator")
-
-    el.textContent = message
-
-    el.className = ""
-
-    if (type === "loading") el.classList.add("status-loading")
-    if (type === "ok") el.classList.add("status-ok")
-    if (type === "error") el.classList.add("status-error")
-}
-
-async function loadData() {
-
-    setStatus("⏳ Loading datasets...", "loading")
-
-    try {
-
-        const recipeRes = await fetch("data/recipes.json")
-        recipes = await recipeRes.json()
-
-        const itemRes = await fetch("data/items.json")
-        items = await itemRes.json()
-
-        buildItemMap()
-
-        console.log("Recipes:", recipes.length)
-        console.log("Items:", items.length)
-
-        setStatus("✅ CraftMander data loaded!", "ok")
-
-    } catch (err) {
-
-        console.error(err)
-
-        setStatus("❌ Error loading data", "error")
-    }
-}
-
-loadData()
+setupSearchUI();
