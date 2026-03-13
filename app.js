@@ -3,6 +3,7 @@ let recipes = [];
 let items = [];
 let itemMap = {};
 let watchlist = [];  // Stored as recipe IDs
+let materials = {};  // player materials loaded from API
 
 // Globally accessible status function
 window.setStatus = function(message, type) {
@@ -22,12 +23,6 @@ function buildItemMap() {
         itemMap[item.id] = item;
     }
     console.log("Item map ready");
-}
-
-// Minimal test inventory
-let materials = {
-    19721: 50,
-    19720: 100
 }
 
 // Search recipes by name
@@ -50,12 +45,10 @@ function addRecipeToWatchlist(recipeId) {
     }
 }
 
-// Save watchlist to localStorage
+// Save/load watchlist
 function saveWatchlist() {
     localStorage.setItem("craftManderWatchlist", JSON.stringify(watchlist));
 }
-
-// Load watchlist from localStorage
 function loadWatchlist() {
     const stored = localStorage.getItem("craftManderWatchlist");
     if (stored) {
@@ -133,7 +126,6 @@ function renderSearchResults(results) {
 // Hook up search UI
 function setupSearchUI() {
     const searchInput = document.getElementById("recipeSearch");
-
     searchInput.addEventListener("input", () => {
         const query = searchInput.value.trim();
         if (!query) {
@@ -145,6 +137,37 @@ function setupSearchUI() {
     });
 }
 
+// Hook up API key UI
+function setupAPIKeyUI() {
+    const input = document.getElementById("apiKeyInput");
+    const btn = document.getElementById("loadMaterialsBtn");
+
+    btn.addEventListener("click", async () => {
+        const key = input.value.trim();
+        if (!key) {
+            alert("Please enter a GW2 API key");
+            return;
+        }
+        setStatus("⏳ Loading account materials...", "loading");
+        try {
+            const res = await fetch("https://api.guildwars2.com/v2/account/materials", {
+                headers: { Authorization: `Bearer ${key}` }
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            materials = {};
+            for (const entry of data) {
+                materials[entry.id] = entry.count;
+            }
+            setStatus(`✅ Loaded ${Object.keys(materials).length} materials`, "ok");
+            checkTrackedRecipes();
+        } catch (err) {
+            console.error(err);
+            setStatus("❌ Failed to load materials", "error");
+        }
+    });
+}
+
 // Load datasets
 async function loadData() {
     setStatus("⏳ Loading datasets...", "loading");
@@ -152,7 +175,7 @@ async function loadData() {
         const recipeRes = await fetch("data/recipes.json");
         recipes = await recipeRes.json();
 
-        const itemRes = await fetch("data/items.json"); // updated name
+        const itemRes = await fetch("data/items.json");
         items = await itemRes.json();
 
         buildItemMap();
@@ -175,3 +198,4 @@ async function loadData() {
 // Initialize app
 loadData();
 setupSearchUI();
+setupAPIKeyUI();
