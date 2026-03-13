@@ -93,7 +93,7 @@ async function loadData() {
 // Start everything
 loadData();
 materials = {}
-let trackedRecipes = []
+trackedRecipes = []
 
 function loadAccount() {
   const key = document.getElementById("apikey").value
@@ -105,8 +105,8 @@ function searchRecipes() {
   console.log("Searching for:", term)
 }
 
-let recipes = []
-let items = []
+recipes = []
+items = []
 
 function setStatus(message, type) {
 
