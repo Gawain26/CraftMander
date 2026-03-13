@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GW2 Craftable Checker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>GW2 Craftable Recipe Checker</h1>
+
+<div>
+  <input id="apikey" placeholder="Enter GW2 API key">
+  <button onclick="loadAccount()">Load Materials</button>
+</div>
+
+<hr>
+
+<div>
+  <input id="searchBox" placeholder="Search recipes">
+  <button onclick="searchRecipes()">Search</button>
+</div>
+
+<h2>Tracked Recipes</h2>
+<ul id="trackedList"></ul>
+
+<h2>Craftable Now</h2>
+<ul id="craftableList"></ul>
+
+<script src="app.js"></script>
+
+</body>
+</html>
