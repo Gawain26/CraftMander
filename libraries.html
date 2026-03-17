@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftMander — Libraries</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">⚒ CraftMander</a>
+    <a href="index.html">Explorer</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="libraries.html" class="active">Libraries</a>
+</nav>
+
+<div class="page">
+    <h1>Libraries</h1>
+    <p class="page-subtitle">Curated recipe sets — add or remove whole groups at once.</p>
+
+    <div class="layout layout-3col">
+
+        <!-- Left: library list -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Collections</h2>
+            </div>
+            <ul id="libraryList"></ul>
+        </div>
+
+        <!-- Middle: library preview -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 id="libraryTitle">Select a collection</h2>
+            </div>
+            <div id="libraryActions"></div>
+            <ul id="libraryRecipes">
+                <li class="empty-state">Choose a collection on the left.</li>
+            </ul>
+        </div>
+
+        <!-- Right: current watchlist -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>My Watchlist</h2>
+            </div>
+            <ul id="explorerWatchlist"></ul>
+        </div>
+
+    </div>
+</div>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="crafting.js"></script>
+<script src="watchlist.js"></script>
+<script src="libraries.js"></script>
+</body>
+</html>

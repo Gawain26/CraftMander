@@ -1,0 +1,216 @@
+{
+  "_readme": "Replace every TODO value with the real recipe ID from: https://api.guildwars2.com/v2/recipes/search?output=ITEM_ID  Then strip all _name/_item_id/_note/_confirmed keys — they are only here to guide lookup. Final format is just: \"Library Name\": [id, id, id, ...]",
+
+  "HoT — Verdant Brink Provisioner":    {
+    "Assassin's Krait Machete":         { "_item_id": 46281, "recipe_id": 5793 },
+    "Assassin's Krait Star":            { "_item_id": 46040, "recipe_id": 4047 },
+    "Assassin's Krait Shooter":         { "_item_id": 46186, "recipe_id": 4889 },
+    "Assassin's Masquerade Leggings":   { "_item_id": 45731, "recipe_id": 2330 },
+    "Assassin's Noble Pants":           { "_item_id": 45765, "recipe_id": 1478 },
+    "Assassin's Gladiator Legplates":   { "_item_id": 45622, "recipe_id": 818  },
+    "Carrion Krait Slayer":             { "_item_id": 15465, "recipe_id": 6001 },
+    "Carrion Krait Wand":               { "_item_id": 13924, "recipe_id": 3969 },
+    "Carrion Krait Short Bow":          { "_item_id": 14469, "recipe_id": 4845 },
+    "Carrion Masquerade Boots":         { "_item_id": 11121, "recipe_id": 2412 },
+    "Carrion Noble Boots":              { "_item_id": 11876, "recipe_id": 1560 },
+    "Carrion Gladiator Boots":          { "_item_id": 10702, "recipe_id": 606  },
+    "Valkyrie Krait Shell":             { "_item_id": 15394, "recipe_id": 5755 },
+    "Valkyrie Krait Crook":             { "_item_id": 13895, "recipe_id": 4131 },
+    "Valkyrie Krait Whelk":             { "_item_id": 14517, "recipe_id": 4935 },
+    "Valkyrie Masquerade Raiments":     { "_item_id": 11295, "recipe_id": 2544 },
+    "Valkyrie Noble Coat":              { "_item_id": 11798, "recipe_id": 1650 },
+    "Valkyrie Gladiator Breastplate":   { "_item_id": 10722, "recipe_id": 696  },
+    "Cleric's Krait Warhammer":         { "_item_id": 15508, "recipe_id": 5834 },
+    "Cleric's Krait Star":              { "_item_id": 13974, "recipe_id": 4046 },
+    "Cleric's Krait Handgun":           { "_item_id": 14596, "recipe_id": 4972 },
+    "Cleric's Masquerade Gloves":       { "_item_id": 11248, "recipe_id": 2371 },
+    "Cleric's Noble Gloves":            { "_item_id": 11835, "recipe_id": 1603 },
+    "Cleric's Gladiator Gauntlets":     { "_item_id": 10710, "recipe_id": 649  },
+	"Apothecary's Krait Ripper":        { "_item_id": 36779, "recipe_id": 6702 },
+	"Apothecary's Krait Crook":         { "_item_id": 36813, "recipe_id": 6577 },
+    "Apothecary's Krait Recurve Bow":   { "_item_id": 36750, "recipe_id": 6601 },
+    "Apothecary's Masquerade Mantle":   { "_item_id": 36892, "recipe_id": 6678 },
+    "Apothecary's Noble Shoulders":     { "_item_id": 36891, "recipe_id": 6654 },
+    "Apothecary's Gladiator Pauldrons": { "_item_id": 36746, "recipe_id": 6546 }
+  },
+  
+  "HoT — Auric Basin Provisioner": {
+    "Bringer's Krait Morning Star": {
+      "_item_id": 38336,
+      "recipe_id": 6925
+    },
+    "Bringer's Krait Wand": {
+      "_item_id": 38415,
+      "recipe_id": 6945
+    },
+    "Bringer's Krait Recurve Bow": {
+      "_item_id": 38367,
+      "recipe_id": 6986
+    },
+    "Giver's Masquerade Mask": {
+      "_item_id": 38228,
+      "recipe_id": 6821
+    },
+    "Giver's Noble Mask": {
+      "_item_id": 38264,
+      "recipe_id": 6860
+    },
+    "Giver's Gladiator Helm": {
+      "_item_id": 38179,
+      "recipe_id": 6774
+    },
+    "Valkyrie Krait Morning Star": {
+      "_item_id": 15352,
+      "recipe_id": 5881
+    },
+    "Valkyrie Krait Crook": {
+      "_item_id": 13895,
+      "recipe_id": 4131
+    },
+    "Valkyrie Krait Brazier": {
+      "_item_id": 14566,
+      "recipe_id": 4809
+    },
+    "Valkyrie Masquerade Raiments": {
+      "_item_id": 11295,
+      "recipe_id": 2544
+    },
+    "Valkyrie Noble Coat": {
+      "_item_id": 11798,
+      "recipe_id": 1650
+    },
+    "Valkyrie Gladiator Chestplate": {
+      "_item_id": 10722,
+      "recipe_id": 696
+    },
+    "Rampager's Krait Battleaxe": {
+      "_item_id": 15427,
+      "recipe_id": 5921
+    },
+    "Rampager's Krait Wand": {
+      "_item_id": 13928,
+      "recipe_id": 3973
+    },
+    "Rampager's Krait Shooter": {
+      "_item_id": 14648,
+      "recipe_id": 4891
+    },
+    "Rampager's Masquerade Leggings": {
+      "_item_id": 11167,
+      "recipe_id": 2332
+    },
+    "Rampager's Noble Pants": {
+      "_item_id": 11754,
+      "recipe_id": 1480
+    },
+    "Rampager's Gladiator Legplates": {
+      "_item_id": 10699,
+      "recipe_id": 820
+    }
+  },
+  
+  "HoT — Tangled Depths Provisioner": {
+    "Berserker's Krait Shell": {
+      "_item_id": 15391,
+      "recipe_id": 5752
+    },
+    "Berserker's Krait Star": {
+      "_item_id": 13976,
+      "recipe_id": 4048
+    },
+    "Berserker's Krait Brazier": {
+      "_item_id": 14563,
+      "recipe_id": 4806
+    },
+    "Berserker's Masquerade Mantle": {
+      "_item_id": 11341,
+      "recipe_id": 2457
+    },
+    "Berserker's Noble Shoulders": {
+      "_item_id": 11921,
+      "recipe_id": 1521
+    },
+    "Berserker's Gladiator Pauldrons": {
+      "_item_id": 10691,
+      "recipe_id": 777
+    },
+    "Carrion Krait Battleaxe": {
+      "_item_id": 15423,
+      "recipe_id": 5917
+    },
+    "Carrion Krait Star": {
+      "_item_id": 13973,
+      "recipe_id": 4045
+    },
+    "Carrion Krait Recurve Bow": {
+      "_item_id": 14428,
+      "recipe_id": 5012
+    },
+    "Carrion Masquerade Gloves": {
+      "_item_id": 11247,
+      "recipe_id": 2370
+    },
+    "Carrion Noble Gloves": {
+      "_item_id": 11834,
+      "recipe_id": 1602
+    },
+    "Carrion Gladiator Gauntlets": {
+      "_item_id": 10709,
+      "recipe_id": 648
+    },
+    "Knight's Krait Warhammer": {
+      "_item_id": 15512,
+      "recipe_id": 5838
+    },
+    "Knight's Krait Crook": {
+      "_item_id": 13894,
+      "recipe_id": 4130
+    },
+    "Knight's Krait Whelk": {
+      "_item_id": 14516,
+      "recipe_id": 4934
+    },
+    "Knight's Masquerade Boots": {
+      "_item_id": 11126,
+      "recipe_id": 2417
+    },
+    "Knight's Noble Boots": {
+      "_item_id": 11881,
+      "recipe_id": 1565
+    },
+    "Knight's Gladiator Boots": {
+      "_item_id": 10707,
+      "recipe_id": 611
+    },
+    "Apothecary's Krait Ripper": {
+      "_item_id": 36779,
+      "recipe_id": 6702
+    },
+    "Apothecary's Krait Wand": {
+      "_item_id": 36780,
+      "recipe_id": 6576
+    },
+    "Apothecary's Krait Shooter": {
+      "_item_id": 36812,
+      "recipe_id": 6604
+    },
+    "Apothecary's Masquerade Mask": {
+      "_item_id": 36844,
+      "recipe_id": 6676
+    },
+    "Apothecary's Noble Mask": {
+      "_item_id": 36842,
+      "recipe_id": 6652
+    },
+    "Apothecary's Gladiator Helm": {
+      "_item_id": 36806,
+      "recipe_id": 6544
+    }
+  },
+
+
+
+  "Janthir — TODO": {
+    "_note": "Find item IDs from https://wiki.guildwars2.com/wiki/Faction_Provisioner Janthir section. Wiki flagged a bug with medium armor shoulders as of early 2026 — verify in-game before adding."
+  }
+}

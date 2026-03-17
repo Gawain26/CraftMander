@@ -1,0 +1,698 @@
+/* style.css — CraftMander */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Rubik:wght@300;400;500&display=swap');
+
+/* ── Variables ─────────────────────────────────────────────── */
+:root {
+    --bg:         #232831;
+    --surface:    #2e3440;
+    --surface2:   #3b4252;
+    --surface3:   #434c5e;
+    --border:     #4c566a;
+    --muted:      #616e85;
+    --text:       #eceff4;
+    --text-dim:   #d8dee9;
+    --accent:     #88c0d0;
+    --accent2:    #5e81ac;
+    --green:      #a3be8c;
+    --red:        #bf616a;
+    --gold:       #ebcb8b;
+
+    --radius:     6px;
+    --radius-lg:  10px;
+    --transition: 0.18s ease;
+    --shadow:     0 2px 12px rgba(0,0,0,0.35);
+}
+
+/* ── Reset & Base ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 400;
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.55;
+}
+
+/* Subtle grid texture */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(136,192,208,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(136,192,208,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Nav ────────────────────────────────────────────────────── */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+}
+
+.nav-brand {
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-right: 16px;
+    text-decoration: none;
+}
+
+nav a:not(.nav-brand) {
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    transition: background var(--transition), color var(--transition);
+}
+
+nav a:not(.nav-brand):hover {
+    background: var(--surface2);
+    color: var(--text);
+}
+
+nav a.active {
+    background: var(--accent2);
+    color: var(--text);
+}
+
+/* ── Page wrapper ───────────────────────────────────────────── */
+.page {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+}
+
+.page-subtitle {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+}
+
+h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+/* ── Panels ─────────────────────────────────────────────────── */
+.layout {
+    display: grid;
+    gap: 20px;
+}
+
+.layout-2col {
+    grid-template-columns: 1fr 1fr;
+}
+
+.layout-3col {
+    grid-template-columns: 220px 1fr 1fr;
+}
+
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.panel-header h2 { margin-bottom: 0; }
+
+.count-badge {
+    font-size: 0.75rem;
+    background: var(--surface3);
+    color: var(--muted);
+    border-radius: 20px;
+    padding: 2px 9px;
+}
+
+/* ── Inputs ─────────────────────────────────────────────────── */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 9px 12px;
+    margin-bottom: 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'Rubik', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(136,192,208,0.18);
+}
+
+input::placeholder { color: var(--muted); }
+
+/* ── Buttons ────────────────────────────────────────────────── */
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radius);
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 500;
+    background: var(--accent2);
+    color: var(--text);
+    transition: background var(--transition), transform var(--transition);
+}
+
+button:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--bg);
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: default;
+    transform: none;
+}
+
+button.danger {
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+}
+
+button.danger:hover:not(:disabled) {
+    background: var(--red);
+    color: var(--text);
+}
+
+button.primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+    padding: 9px 20px;
+}
+
+button.primary:hover:not(:disabled) {
+    background: #9dd3e3;
+}
+
+/* ── Lists ───────────────────────────────────────────────────── */
+ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+li {
+    padding: 8px 12px;
+    background: var(--surface2);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background var(--transition), border-color var(--transition);
+    font-size: 0.9rem;
+}
+
+li:hover { background: var(--surface3); border-color: var(--border); }
+
+li.active {
+    border-color: var(--accent);
+    background: var(--surface3);
+}
+
+li.empty-state {
+    color: var(--muted);
+    font-style: italic;
+    justify-content: center;
+    background: transparent;
+    border-color: var(--border);
+    border-style: dashed;
+}
+
+.item-name {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.remove-btn {
+    background: transparent;
+    color: var(--muted);
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.remove-btn:hover:not(:disabled) {
+    background: var(--red);
+    color: var(--text);
+    transform: none;
+}
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+}
+
+.badge.craftable {
+    background: rgba(163,190,140,0.18);
+    color: var(--green);
+    border: 1px solid rgba(163,190,140,0.35);
+}
+
+.badge.not-craftable {
+    background: rgba(191,97,106,0.15);
+    color: var(--red);
+    border: 1px solid rgba(191,97,106,0.3);
+}
+
+.badge.on-list {
+    background: rgba(94,129,172,0.2);
+    color: var(--accent);
+    border: 1px solid rgba(94,129,172,0.35);
+}
+
+/* ── API Status ──────────────────────────────────────────────── */
+.api-status {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    margin-top: 10px;
+    min-height: 36px;
+}
+
+.api-status.loading {
+    background: rgba(136,192,208,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(136,192,208,0.25);
+}
+
+.api-status.success {
+    background: rgba(163,190,140,0.12);
+    color: var(--green);
+    border: 1px solid rgba(163,190,140,0.3);
+}
+
+.api-status.error {
+    background: rgba(191,97,106,0.12);
+    color: var(--red);
+    border: 1px solid rgba(191,97,106,0.3);
+}
+
+/* ── Library actions row ─────────────────────────────────────── */
+#libraryActions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+/* ── API panel load row ──────────────────────────────────────── */
+.load-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
+}
+
+.account-name {
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.9;
+}
+
+/* ── Serial craft summary ────────────────────────────────────── */
+.clear-watchlist-btn {
+    font-size: 0.78rem;
+    padding: 4px 8px;
+    background: var(--surface3);
+    color: var(--muted);
+    border: 1px solid var(--border);
+}
+
+.clear-watchlist-btn:hover:not(:disabled) {
+    background: rgba(191,97,106,0.2);
+    color: var(--red);
+    border-color: rgba(191,97,106,0.4);
+    transform: none;
+}
+
+.serial-mode-btn {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    background: var(--surface3);
+    color: var(--muted);
+    border: 1px solid var(--border);
+}
+
+.serial-mode-btn:hover:not(:disabled) {
+    background: var(--surface3);
+    color: var(--text);
+    transform: none;
+}
+
+.serial-mode-btn.active {
+    background: rgba(235,203,139,0.15);
+    color: var(--gold);
+    border-color: rgba(235,203,139,0.4);
+}
+
+.serial-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    flex-wrap: wrap;
+}
+
+.serial-summary.hidden { display: none; }
+
+.serial-count {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.serial-count.none { color: var(--muted); }
+.serial-count.some { color: var(--gold); }
+.serial-count.all  { color: var(--green); }
+
+.serial-btn {
+    font-size: 0.8rem;
+    padding: 5px 11px;
+    white-space: nowrap;
+}
+
+/* Per-item serial include/exclude toggle */
+.serial-item-toggle {
+    padding: 2px 7px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    background: rgba(163,190,140,0.15);
+    color: var(--green);
+    border: 1px solid rgba(163,190,140,0.3);
+}
+
+.serial-item-toggle.excluded {
+    background: rgba(97,110,133,0.2);
+    color: var(--muted);
+    border-color: var(--border);
+}
+
+.serial-item-toggle.insufficient {
+    background: rgba(191,97,106,0.15);
+    color: var(--red);
+    border-color: rgba(191,97,106,0.3);
+}
+
+.serial-item-toggle:hover:not(:disabled) {
+    transform: none;
+    filter: brightness(1.2);
+}
+
+li.serial-excluded {
+    opacity: 0.45;
+}
+
+li.serial-insufficient {
+    opacity: 0.6;
+    border-color: rgba(191,97,106,0.25);
+}
+
+/* ── Rarity colors (GW2 standard palette) ───────────────────── */
+.rarity-junk        { color: #AAAAAA; }
+.rarity-basic       { color: #AAAAAA; }
+.rarity-fine        { color: #62A4DA; }
+.rarity-masterwork  { color: #1a9306; }
+.rarity-rare        { color: #fcd00b; }
+.rarity-exotic      { color: #FFA405; }
+.rarity-ascended    { color: #FB3E8D; }
+.rarity-legendary   { color: #4C139D; }
+
+/* ── Dashboard detail panel (full-width bottom) ─────────────── */
+.panel-detail {
+    max-height: none;
+    overflow: visible;
+}
+
+.panel-detail #detailContent {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.panel-detail .detail-links {
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-bottom: 0;
+    min-width: 160px;
+}
+
+.panel-detail .craft-tree {
+    flex: 1;
+    min-width: 280px;
+}
+
+.panel-detail .tree-list {
+    columns: 2;
+    column-gap: 24px;
+}
+
+.panel-detail .tree-list .tree-list {
+    columns: 1;
+    break-inside: avoid;
+}
+
+li.tree-item {
+    break-inside: avoid;
+}
+
+/* ── Selectable list items ───────────────────────────────────── */
+li.selectable { cursor: pointer; }
+
+li.selected {
+    border-color: var(--accent);
+    background: var(--surface3);
+    box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* ── Detail panel ────────────────────────────────────────────── */
+.empty-hint {
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-style: italic;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.detail-links {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.detail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background var(--transition), transform var(--transition);
+}
+
+.detail-link:hover {
+    transform: translateY(-1px);
+}
+
+.wiki-link {
+    background: rgba(94,129,172,0.2);
+    color: var(--accent);
+    border: 1px solid rgba(94,129,172,0.4);
+}
+
+.wiki-link:hover { background: rgba(94,129,172,0.35); }
+
+.eff-link {
+    background: rgba(235,203,139,0.15);
+    color: var(--gold);
+    border: 1px solid rgba(235,203,139,0.35);
+}
+
+.eff-link:hover { background: rgba(235,203,139,0.28); }
+
+/* ── Crafting tree ───────────────────────────────────────────── */
+.tree-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.tree-list {
+    gap: 3px;
+}
+
+.tree-list .tree-list {
+    margin-left: 18px;
+    margin-top: 4px;
+    padding-left: 10px;
+    border-left: 1px solid var(--border);
+}
+
+li.tree-item {
+    background: transparent;
+    border: none;
+    padding: 4px 6px;
+    gap: 6px;
+    align-items: center;
+    border-radius: var(--radius);
+}
+
+li.tree-item:hover { background: var(--surface2); }
+
+.tree-toggle {
+    background: transparent;
+    color: var(--muted);
+    padding: 0 4px;
+    font-size: 0.65rem;
+    min-width: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.tree-toggle:hover:not(:disabled) {
+    background: var(--surface3);
+    color: var(--accent);
+    transform: none;
+}
+
+.tree-toggle-spacer {
+    display: inline-block;
+    min-width: 18px;
+    flex-shrink: 0;
+}
+
+.tree-item-name {
+    flex: 1;
+    font-size: 0.875rem;
+}
+
+.tree-count {
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    padding: 1px 7px;
+    border-radius: 20px;
+    flex-shrink: 0;
+}
+
+.tree-count.have {
+    background: rgba(163,190,140,0.15);
+    color: var(--green);
+    border: 1px solid rgba(163,190,140,0.3);
+}
+
+.tree-count.missing {
+    background: rgba(191,97,106,0.12);
+    color: var(--red);
+    border: 1px solid rgba(191,97,106,0.28);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .layout-2col,
+    .layout-3col {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-detail #detailContent {
+        flex-direction: column;
+    }
+
+    .panel-detail .tree-list {
+        columns: 1;
+    }
+
+    .panel { max-height: 50vh; }
+    .panel-detail { max-height: none; }
+    nav { flex-wrap: wrap; }
+}

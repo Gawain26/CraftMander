@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftMander — Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">⚒ CraftMander</a>
+    <a href="index.html">Explorer</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="libraries.html">Libraries</a>
+</nav>
+
+<div class="page">
+    <h1>Craftability Dashboard</h1>
+    <p class="page-subtitle">Load your GW2 account materials to see what you can craft right now.</p>
+
+    <!-- Top row: 2 columns -->
+    <div class="layout layout-2col" style="margin-bottom: 20px;">
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>GW2 API Key</h2>
+            </div>
+            <p style="font-size:0.85rem; color:var(--muted); margin-bottom:12px;">
+                Generate a key at
+                <a href="https://account.arena.net/applications" target="_blank"
+                   style="color:var(--accent);">account.arena.net</a>
+                with the <strong>inventories</strong> permission.
+            </p>
+            <input
+                type="password"
+                id="apiKeyInput"
+                placeholder="Paste your API key…"
+                autocomplete="off"
+            >
+            <div class="load-row">
+                <button id="loadMaterialsBtn" class="primary">Load Materials</button>
+                <span id="accountName" class="account-name"></span>
+            </div>
+            <div id="apiStatus" class="api-status"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Watchlist</h2>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button id="serialModeToggle" class="serial-mode-btn" title="Enter serial mode">
+                        ⛓ Serial
+                    </button>
+                    <button id="clearWatchlistBtn" class="clear-watchlist-btn" title="Clear entire watchlist">
+                        🗑
+                    </button>
+                </div>
+            </div>
+            <div id="serialSummary" class="serial-summary hidden">
+                <span id="serialCount" class="serial-count"></span>
+                <a id="serialGW2EBtn" href="#" target="_blank" rel="noopener" class="detail-link eff-link serial-btn">
+                    ⚙ Craft All in GW2Efficiency
+                </a>
+            </div>
+            <ul id="craftableWatchlist"></ul>
+        </div>
+
+    </div>
+
+    <!-- Bottom row: full width detail panel -->
+    <div class="panel panel-detail" id="detailPanel">
+        <div class="panel-header">
+            <h2 id="detailTitle">Recipe Detail</h2>
+        </div>
+        <div id="detailContent">
+            <p class="empty-hint">Click any item in your watchlist to see its crafting tree and links.</p>
+        </div>
+    </div>
+
+</div>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="crafting.js"></script>
+<script src="watchlist.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>
