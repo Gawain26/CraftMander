@@ -3,6 +3,7 @@
 // API key is accepted in the POST body only — never in the URL.
 
 const ALLOWED_ORIGINS = [
+    "https://craftmander.strikingwolf26.workers.dev",
     "https://pactcraftmander.netlify.app",
     "http://localhost:3000",
     "http://localhost:5000",

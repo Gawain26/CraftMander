@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftMander — Help</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Help page extras ──────────────────────────────── */
+        .help-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 220px 1fr;
+            align-items: start;
+        }
+
+        /* Sticky sidebar nav */
+        .help-nav {
+            position: sticky;
+            top: 76px; /* below the main nav */
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            max-height: calc(100vh - 96px);
+            overflow-y: auto;
+        }
+
+        .help-nav h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .help-nav ul {
+            gap: 2px;
+        }
+
+        .help-nav li {
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .help-nav li:hover {
+            background: transparent;
+            border: none;
+        }
+
+        .help-nav a {
+            display: block;
+            padding: 6px 10px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            transition: background var(--transition), color var(--transition);
+        }
+
+        .help-nav a:hover {
+            background: var(--surface2);
+            color: var(--text);
+        }
+
+        .help-nav a.active {
+            background: var(--accent2);
+            color: var(--text);
+        }
+
+        .help-nav .nav-section {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .help-nav .nav-section:first-child {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        /* Main content */
+        .help-content {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .help-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+        }
+
+        .help-section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .help-section-icon {
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .help-section-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+            text-transform: none;
+            margin-bottom: 0;
+        }
+
+        .help-section-header .page-tag {
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 3px 9px;
+            border-radius: 20px;
+            margin-left: auto;
+            white-space: nowrap;
+            background: var(--surface3);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .help-section p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.65;
+            margin-bottom: 12px;
+        }
+
+        .help-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Step list */
+        .steps {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            counter-reset: steps;
+        }
+
+        .steps li {
+            counter-increment: steps;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 14px 12px 48px;
+            position: relative;
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.55;
+        }
+
+        .steps li::before {
+            content: counter(steps);
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            background: var(--accent2);
+            color: var(--text);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+        }
+
+        .steps li:hover {
+            background: var(--surface3);
+            border-color: var(--border);
+        }
+
+        .steps li strong {
+            color: var(--text);
+        }
+
+        /* Callout boxes */
+        .callout {
+            display: flex;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: var(--radius);
+            margin-top: 14px;
+            font-size: 0.875rem;
+            line-height: 1.55;
+        }
+
+        .callout-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .callout.tip {
+            background: rgba(136,192,208,0.08);
+            border: 1px solid rgba(136,192,208,0.22);
+            color: var(--accent);
+        }
+
+        .callout.warning {
+            background: rgba(235,203,139,0.08);
+            border: 1px solid rgba(235,203,139,0.22);
+            color: var(--gold);
+        }
+
+        .callout.info {
+            background: rgba(94,129,172,0.1);
+            border: 1px solid rgba(94,129,172,0.25);
+            color: var(--text-dim);
+        }
+
+        /* Feature table */
+        .feature-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        .feature-table th {
+            text-align: left;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid rgba(76,86,106,0.4);
+            color: var(--text-dim);
+            vertical-align: top;
+        }
+
+        .feature-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .feature-table tr:hover td {
+            background: rgba(59,66,82,0.5);
+        }
+
+        .feature-table td:first-child {
+            color: var(--text);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* Inline badge mockups */
+        .mock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .mock-badge.craftable {
+            background: rgba(163,190,140,0.18);
+            color: var(--green);
+            border: 1px solid rgba(163,190,140,0.35);
+        }
+
+        .mock-badge.not-craftable {
+            background: rgba(191,97,106,0.15);
+            color: var(--red);
+            border: 1px solid rgba(191,97,106,0.3);
+        }
+
+        .mock-badge.on-list {
+            background: rgba(94,129,172,0.2);
+            color: var(--accent);
+            border: 1px solid rgba(94,129,172,0.35);
+        }
+
+        /* Key shortcut pills */
+        kbd {
+            display: inline-block;
+            padding: 1px 7px;
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            vertical-align: middle;
+        }
+
+        /* Section anchors for scroll */
+        .anchor {
+            scroll-margin-top: 84px;
+        }
+
+        /* Subtle divider between sub-sections */
+        .help-sub {
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(76,86,106,0.4);
+        }
+
+        .help-sub h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .help-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .help-nav {
+                position: static;
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">⚒ CraftMander</a>
+    <a href="index.html">Explorer</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="libraries.html">Libraries</a>
+    <a href="help.html" class="active">Help</a>
+</nav>
+
+<div class="page">
+    <h1>Help &amp; Documentation</h1>
+    <p class="page-subtitle">Everything you need to get started with CraftMander.</p>
+
+    <div class="help-grid">
+
+        <!-- Sidebar navigation -->
+        <aside class="help-nav">
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="#overview">What is CraftMander?</a></li>
+                    <li><a href="#api-key">Setting up your API key</a></li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <h3>Pages</h3>
+                <ul>
+                    <li><a href="#explorer">Recipe Explorer</a></li>
+                    <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#libraries">Libraries</a></li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <h3>Features</h3>
+                <ul>
+                    <li><a href="#watchlist">Watchlist</a></li>
+                    <li><a href="#serial-mode">Serial Mode</a></li>
+                    <li><a href="#craft-tree">Crafting Tree</a></li>
+                    <li><a href="#external-links">External Links</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <div class="help-content">
+
+            <!-- Overview -->
+            <section class="help-section anchor" id="overview">
+                <div class="help-section-header">
+                    <span class="help-section-icon">⚒</span>
+                    <h2>What is CraftMander?</h2>
+                </div>
+                <p>
+                    CraftMander is a Guild Wars 2 crafting tool that connects to your GW2 account and tells you
+                    which recipes you can craft <em>right now</em> based on your current material storage.
+                </p>
+                <p>
+                    You build a personal <strong>watchlist</strong> of recipes you care about — either by
+                    searching manually or loading a curated <strong>Library</strong> — then check the
+                    <strong>Dashboard</strong> to see your craftability status at a glance.
+                </p>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <span>Your watchlist and API key are saved locally in your browser and persist between sessions. No data is stored on any server.</span>
+                </div>
+            </section>
+
+            <!-- API Key -->
+            <section class="help-section anchor" id="api-key">
+                <div class="help-section-header">
+                    <span class="help-section-icon">🔑</span>
+                    <h2>Setting Up Your API Key</h2>
+                    <span class="page-tag">Dashboard</span>
+                </div>
+                <p>CraftMander needs a GW2 API key to read your material storage. Here's how to create one:</p>
+                <ol class="steps">
+                    <li>Go to <strong>account.arena.net/applications</strong> and log in with your GW2 account.</li>
+                    <li>Click <strong>New Key</strong> and give it a name (e.g. "CraftMander").</li>
+                    <li>Enable the <strong>inventories</strong> permission. No other permissions are needed.</li>
+                    <li>Copy the generated key and paste it into the API Key field on the Dashboard.</li>
+                    <li>Click <strong>Load Materials</strong>. Your account name and material counts will appear.</li>
+                </ol>
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <span>Your key is saved in your browser's local storage after the first successful load, so you won't need to re-enter it each visit.</span>
+                </div>
+                <div class="callout warning">
+                    <span class="callout-icon">⚠️</span>
+                    <span>Only grant the <strong>inventories</strong> permission. Never share API keys that have account, trading post, or wallet permissions with third-party tools.</span>
+                </div>
+            </section>
+
+            <!-- Explorer -->
+            <section class="help-section anchor" id="explorer">
+                <div class="help-section-header">
+                    <span class="help-section-icon">🔍</span>
+                    <h2>Recipe Explorer</h2>
+                    <span class="page-tag">Explorer page</span>
+                </div>
+                <p>
+                    The Explorer is where you search for individual recipes and add them to your watchlist.
+                    Type any item name in the search box and matching recipes will appear instantly.
+                </p>
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Search box</td>
+                            <td>Filters recipes in real time as you type. Matches anywhere in the item name.</td>
+                        </tr>
+                        <tr>
+                            <td>+ Watch button</td>
+                            <td>Adds the recipe to your watchlist. Changes to ✔ Added once it's on the list.</td>
+                        </tr>
+                        <tr>
+                            <td>Item rarity color</td>
+                            <td>Names are colored by rarity — grey (Basic), blue (Fine), green (Masterwork), yellow (Rare), orange (Exotic), pink (Ascended), purple (Legendary).</td>
+                        </tr>
+                        <tr>
+                            <td>Watchlist panel</td>
+                            <td>Shows all watched recipes. Click ✖ to remove an item. No craftability info is shown here — load materials on the Dashboard for that.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Dashboard -->
+            <section class="help-section anchor" id="dashboard">
+                <div class="help-section-header">
+                    <span class="help-section-icon">📊</span>
+                    <h2>Dashboard</h2>
+                    <span class="page-tag">Dashboard page</span>
+                </div>
+                <p>
+                    The Dashboard is the main view for seeing what you can craft. After loading your materials,
+                    each watchlist item shows a live craftability badge.
+                </p>
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Badge</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="mock-badge craftable">✓ Ready</span></td>
+                            <td>You have all the required ingredients in your material storage right now.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="mock-badge not-craftable">✗ Missing</span></td>
+                            <td>One or more ingredients are missing or insufficient.</td>
+                        </tr>
+                        <tr>
+                            <td><em>(no badge)</em></td>
+                            <td>Materials haven't been loaded yet — enter your API key and click Load Materials.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <span>Craftability checks are <strong>recursive</strong> — if an ingredient can itself be crafted from your materials, CraftMander accounts for that automatically.</span>
+                </div>
+
+                <div class="help-sub">
+                    <h3>Clicking a watchlist item</h3>
+                    <p>
+                        Clicking any item in the watchlist opens the <strong>Recipe Detail</strong> panel at the
+                        bottom of the page. This shows the full crafting tree with per-ingredient
+                        have/need counts, plus quick links to the GW2 Wiki and GW2Efficiency.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Libraries -->
+            <section class="help-section anchor" id="libraries">
+                <div class="help-section-header">
+                    <span class="help-section-icon">📚</span>
+                    <h2>Libraries</h2>
+                    <span class="page-tag">Libraries page</span>
+                </div>
+                <p>
+                    Libraries are curated collections of related recipes — for example, all recipes required
+                    for a specific Faction Provisioner vendor. Instead of searching one by one, you can
+                    add or remove an entire collection at once.
+                </p>
+                <ol class="steps">
+                    <li>Select a collection from the left sidebar.</li>
+                    <li>The middle panel previews all recipes in the collection, with craftability badges if your materials are loaded, and a <span class="mock-badge on-list">Watching</span> tag for items already on your watchlist.</li>
+                    <li>Click <strong>＋ Add All to Watchlist</strong> to add every recipe in the collection, or <strong>✖ Remove All from Watchlist</strong> to remove them all at once.</li>
+                </ol>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <span>Collections labeled <strong>— TODO</strong> are placeholders for future recipe sets that haven't been fully confirmed yet. They won't appear in the sidebar until their recipes are filled in.</span>
+                </div>
+            </section>
+
+            <!-- Watchlist -->
+            <section class="help-section anchor" id="watchlist">
+                <div class="help-section-header">
+                    <span class="help-section-icon">📋</span>
+                    <h2>Watchlist</h2>
+                </div>
+                <p>
+                    Your watchlist persists across all three pages and is saved automatically to your browser's
+                    local storage. Items remain on the list until you remove them manually.
+                </p>
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>How</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Add a recipe</td>
+                            <td>Search for it on the Explorer, or use Add All on the Libraries page.</td>
+                        </tr>
+                        <tr>
+                            <td>Remove one recipe</td>
+                            <td>Click the <strong>✖</strong> button on any watchlist item.</td>
+                        </tr>
+                        <tr>
+                            <td>Clear entire watchlist</td>
+                            <td>Click the 🗑 button in the Dashboard watchlist header. You'll be asked to confirm before anything is deleted.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Serial Mode -->
+            <section class="help-section anchor" id="serial-mode">
+                <div class="help-section-header">
+                    <span class="help-section-icon">⛓</span>
+                    <h2>Serial Mode</h2>
+                    <span class="page-tag">Dashboard page</span>
+                </div>
+                <p>
+                    The default craftability check treats each recipe <em>independently</em> — as if your
+                    full material stack is available for each item. <strong>Serial Mode</strong> simulates
+                    crafting recipes <em>in order</em>, consuming ingredients as you go.
+                </p>
+                <p>
+                    This answers the question: <em>"If I craft these items one after another, how many can I
+                    actually complete before I run out of materials?"</em>
+                </p>
+
+                <div class="help-sub">
+                    <h3>Reading the serial mode indicators</h3>
+                    <table class="feature-table">
+                        <thead>
+                            <tr>
+                                <th>Indicator</th>
+                                <th>Meaning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>✓ (green)</td>
+                                <td>This item is craftable in sequence — materials are still available when its turn comes.</td>
+                            </tr>
+                            <tr>
+                                <td>✗ (red, dimmed)</td>
+                                <td>Materials were used up by earlier crafts — this item can't be made.</td>
+                            </tr>
+                            <tr>
+                                <td>– (grey, faded)</td>
+                                <td>Manually excluded from the serial run. Click to re-include.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="help-sub">
+                    <h3>Craft All in GW2Efficiency</h3>
+                    <p>
+                        When Serial Mode is active and at least one item is craftable in series, the
+                        <strong>⚙ Craft All in GW2Efficiency</strong> button appears. It opens the
+                        GW2Efficiency crafting calculator pre-loaded with all the items that made the cut,
+                        so you can get a full shopping list instantly.
+                    </p>
+                </div>
+
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <span>Order matters in Serial Mode — the watchlist is processed top-to-bottom. Items at the top get first pick of shared ingredients. Use the ✖ remove button to reorder by removing and re-adding items in the order you want.</span>
+                </div>
+            </section>
+
+            <!-- Crafting Tree -->
+            <section class="help-section anchor" id="craft-tree">
+                <div class="help-section-header">
+                    <span class="help-section-icon">🌿</span>
+                    <h2>Crafting Tree</h2>
+                    <span class="page-tag">Dashboard page</span>
+                </div>
+                <p>
+                    Clicking a watchlist item on the Dashboard expands the Recipe Detail panel, which includes
+                    a full crafting tree showing every ingredient and how many you currently have.
+                </p>
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>▶ toggle button</td>
+                            <td>Expand an ingredient's own sub-recipe (if one exists). Click again to collapse. Nests up to 4 levels deep.</td>
+                        </tr>
+                        <tr>
+                            <td>have/need count</td>
+                            <td>Shows how many of this ingredient you have vs. how many are needed. <span style="color:var(--green)">Green</span> = sufficient, <span style="color:var(--red)">red</span> = insufficient.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- External Links -->
+            <section class="help-section anchor" id="external-links">
+                <div class="help-section-header">
+                    <span class="help-section-icon">🔗</span>
+                    <h2>External Links</h2>
+                </div>
+                <p>Each recipe detail panel provides two quick links:</p>
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Link</th>
+                            <th>What it does</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📖 GW2 Wiki</td>
+                            <td>Opens the official Guild Wars 2 wiki page for the output item.</td>
+                        </tr>
+                        <tr>
+                            <td>⚙ GW2Efficiency</td>
+                            <td>Opens the GW2Efficiency crafting calculator pre-loaded with this single item, so you can see a full materials breakdown and where to source missing ingredients.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+        </div><!-- /.help-content -->
+    </div><!-- /.help-grid -->
+</div>
+
+<script src="config.js"></script>
+<script>
+    // Highlight active sidebar link on scroll
+    const sections = document.querySelectorAll(".anchor");
+    const navLinks = document.querySelectorAll(".help-nav a");
+
+    const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                navLinks.forEach(a => a.classList.remove("active"));
+                const active = document.querySelector(`.help-nav a[href="#${entry.target.id}"]`);
+                if (active) active.classList.add("active");
+            }
+        }
+    }, { rootMargin: "-20% 0px -70% 0px" });
+
+    sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
