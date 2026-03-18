@@ -1,18 +1,20 @@
 // data.js — load recipes/items from local data files, materials from GW2 API
 
 async function loadGameData() {
-    const [recipesRes, itemsRes] = await Promise.all([
+    const [recipesRes, itemsRes, currenciesRes] = await Promise.all([
         fetch("data/recipes.json"),
-        fetch("data/items.json")
+        fetch("data/items.json"),
+        fetch("data/currencies.json"),
     ]);
 
-    CraftMander.recipes = await recipesRes.json();
-    CraftMander.items   = await itemsRes.json();
+    CraftMander.recipes    = await recipesRes.json();
+    CraftMander.items      = await itemsRes.json();
+    CraftMander.currencies = await currenciesRes.json(); // { id: name }
 
     buildItemMap();
     buildRecipeLookup();
 
-    console.log(`Loaded ${CraftMander.recipes.length} recipes and ${CraftMander.items.length} items`);
+    console.log(`Loaded ${CraftMander.recipes.length} recipes, ${CraftMander.items.length} items, ${Object.keys(CraftMander.currencies).length} currencies`);
 }
 
 function buildItemMap() {
@@ -49,32 +51,61 @@ async function loadAccountName(apiKey) {
     const data = await res.json();
     return data.name || null;
 }
+
+/**
+ * Fetch account/materials and account/wallet in parallel, populating
+ * CraftMander.materials (item stacks) and CraftMander.wallet (currency balances).
+ * Both are keyed by their respective IDs for O(1) lookup in crafting.js.
+ */
 async function loadMaterials(apiKey) {
     if (!apiKey) {
         apiKey = localStorage.getItem("CraftManderAPIKey");
     }
     if (!apiKey) throw new Error("No API key provided");
 
-    const res = await fetch(PROXY_URL, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ api_key: apiKey }),
-    });
+    const [materialsRes, walletRes] = await Promise.all([
+        fetch(PROXY_URL, {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ api_key: apiKey, endpoint: "materials" }),
+        }),
+        fetch(PROXY_URL, {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ api_key: apiKey, endpoint: "wallet" }),
+        }),
+    ]);
 
-    if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || body.text || `Proxy error ${res.status}`);
+    if (!materialsRes.ok) {
+        const body = await materialsRes.json().catch(() => ({}));
+        throw new Error(body.error || body.text || `Proxy error ${materialsRes.status}`);
     }
 
-    const data = await res.json();
+    // Wallet failing (e.g. missing permission) is non-fatal — we just log it and
+    // continue with an empty wallet. Currency-ingredient recipes will show as
+    // uncraftable rather than crashing the whole load.
+    const materialsData = await materialsRes.json();
+    let walletData = [];
+    if (walletRes.ok) {
+        walletData = await walletRes.json();
+    } else {
+        console.warn("Wallet fetch failed — currency ingredients won't be checked. Add the 'wallet' permission to your API key.");
+    }
 
     CraftMander.materials = {};
-    for (const entry of data) {
+    for (const entry of materialsData) {
         if (entry.count > 0) {
             CraftMander.materials[entry.id] = entry.count;
         }
     }
 
+    CraftMander.wallet = {};
+    for (const entry of walletData) {
+        if (entry.value > 0) {
+            CraftMander.wallet[entry.id] = entry.value;
+        }
+    }
+
     localStorage.setItem("CraftManderAPIKey", apiKey);
-    console.log(`Loaded ${Object.keys(CraftMander.materials).length} material stacks`);
+    console.log(`Loaded ${Object.keys(CraftMander.materials).length} material stacks, ${Object.keys(CraftMander.wallet).length} wallet currencies`);
 }

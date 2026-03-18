@@ -15,6 +15,7 @@ const ALLOWED_ORIGINS = [
 const ALLOWED_ENDPOINTS = {
     "materials": "https://api.guildwars2.com/v2/account/materials",
     "account":   "https://api.guildwars2.com/v2/account",
+    "wallet":    "https://api.guildwars2.com/v2/account/wallet",
 };
 
 const corsHeaders = (origin) => ({

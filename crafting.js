@@ -6,12 +6,13 @@
  *
  * @param {number}  itemId
  * @param {Object}  inv   - mutable inventory clone; consumed as ingredients are used
+ * @param {Object}  wallet - mutable wallet clone; consumed as currency ingredients are used
  * @param {Object}  memo  - keyed by itemId only (not inventory snapshot — inventory
  *                          mutation is the source of truth, memo just short-circuits
  *                          items we already know are fully unreachable with no recipe)
  * @returns {boolean}
  */
-function canCraftItem(itemId, inv, memo = {}) {
+function canCraftItem(itemId, inv, wallet, memo = {}) {
     // Already have one in inventory — consume it and succeed.
     if ((inv[itemId] || 0) > 0) {
         inv[itemId] -= 1;
@@ -29,29 +30,46 @@ function canCraftItem(itemId, inv, memo = {}) {
 
     // Try each recipe; use the first one whose ingredients are all satisfiable.
     for (const recipe of recipes) {
-        const snapshot = { ...inv };
+        const invSnapshot    = { ...inv };
+        const walletSnapshot = { ...wallet };
         let ok = true;
 
         for (const ing of recipe.ingredients) {
-            for (let i = 0; i < ing.count; i++) {
-                if (!canCraftItem(ing.item_id, inv, memo)) {
+            if ("currency_id" in ing) {
+                // Currency ingredient — check wallet balance directly.
+                // Currency is consumed in bulk (not one-at-a-time like items),
+                // so we deduct the full count in one go.
+                const have = wallet[ing.currency_id] || 0;
+                if (have < ing.count) {
                     ok = false;
                     break;
                 }
+                wallet[ing.currency_id] = have - ing.count;
+            } else {
+                // Standard item ingredient — recurse as before.
+                for (let i = 0; i < ing.count; i++) {
+                    if (!canCraftItem(ing.item_id, inv, wallet, memo)) {
+                        ok = false;
+                        break;
+                    }
+                }
+                if (!ok) break;
             }
-            if (!ok) break;
         }
 
         if (ok) {
-            // inventory was mutated in-place as ingredients were consumed — done.
+            // inv and wallet were mutated in-place as ingredients were consumed — done.
             return true;
         }
 
-        // This recipe path failed — restore snapshot and try the next recipe.
-        Object.assign(inv, snapshot);
-        // Also zero out any keys that were added during the failed attempt.
+        // This recipe path failed — restore both snapshots and try the next recipe.
+        Object.assign(inv, invSnapshot);
+        Object.assign(wallet, walletSnapshot);
         for (const key of Object.keys(inv)) {
-            if (!(key in snapshot)) delete inv[key];
+            if (!(key in invSnapshot)) delete inv[key];
+        }
+        for (const key of Object.keys(wallet)) {
+            if (!(key in walletSnapshot)) delete wallet[key];
         }
     }
 
@@ -60,7 +78,7 @@ function canCraftItem(itemId, inv, memo = {}) {
 
 /**
  * For every recipe on the watchlist, determine craftability against current materials.
- * Each item is checked independently against a fresh inventory snapshot.
+ * Each item is checked independently against a fresh inventory + wallet snapshot.
  * Returns a map of { [output_item_id]: boolean }
  */
 function computeCraftables() {
@@ -71,19 +89,25 @@ function computeCraftables() {
         if (!recipe) continue;
 
         const itemId = recipe.output_item_id;
-        results[itemId] = canCraftItem(itemId, { ...CraftMander.materials }, {});
+        results[itemId] = canCraftItem(
+            itemId,
+            { ...CraftMander.materials },
+            { ...CraftMander.wallet },
+            {}
+        );
     }
 
     return results;
 }
 
 /**
- * Run watchlist items against a single shared inventory clone in order.
+ * Run watchlist items against a single shared inventory + wallet clone in order.
  * @param {number[]} watchlist  optional subset — defaults to CraftMander.watchlist
  * Returns { count, itemIds }
  */
 function computeSerialCraftables(watchlist = CraftMander.watchlist) {
-    const inv = { ...CraftMander.materials };
+    const inv    = { ...CraftMander.materials };
+    const wallet = { ...CraftMander.wallet };
     const itemIds = [];
 
     for (const recipeId of watchlist) {
@@ -91,8 +115,8 @@ function computeSerialCraftables(watchlist = CraftMander.watchlist) {
         if (!recipe) continue;
 
         const itemId = recipe.output_item_id;
-        // inv is mutated in place — successful crafts consume their ingredients
-        if (canCraftItem(itemId, inv, {})) {
+        // inv and wallet are mutated in place — successful crafts consume their ingredients
+        if (canCraftItem(itemId, inv, wallet, {})) {
             itemIds.push(itemId);
         }
     }

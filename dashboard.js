@@ -264,13 +264,24 @@ function buildTreeNode(recipe, depth) {
     ul.className = "tree-list";
 
     for (const ing of recipe.ingredients) {
-        const ingId     = ing.item_id;
-        const ingItem   = CraftMander.itemMap[ingId];
-        const ingName   = ingItem?.name || `Item #${ingId}`;
-        const ingRarity = ingItem?.rarity || "";
-        const owned     = CraftMander.materials[ingId] || 0;
-        const needed    = ing.count;
-        const hasEnough = owned >= needed;
+        const isCurrency = "currency_id" in ing;
+
+        let ingName, ingRarity, owned, needed, hasEnough;
+
+        if (isCurrency) {
+            ingName   = CraftMander.currencies[ing.currency_id] || `Currency #${ing.currency_id}`;
+            ingRarity = "";
+            owned     = CraftMander.wallet[ing.currency_id] || 0;
+            needed    = ing.count;
+            hasEnough = owned >= needed;
+        } else {
+            const ingItem = CraftMander.itemMap[ing.item_id];
+            ingName   = ingItem?.name || `Item #${ing.item_id}`;
+            ingRarity = ingItem?.rarity || "";
+            owned     = CraftMander.materials[ing.item_id] || 0;
+            needed    = ing.count;
+            hasEnough = owned >= needed;
+        }
 
         const li = document.createElement("li");
         li.className = "tree-item";
@@ -278,6 +289,7 @@ function buildTreeNode(recipe, depth) {
         const nameSpan = document.createElement("span");
         nameSpan.className = "tree-item-name";
         if (ingRarity) nameSpan.classList.add("rarity-" + ingRarity.toLowerCase());
+        if (isCurrency) nameSpan.classList.add("currency-ingredient");
         nameSpan.textContent = `${needed}× ${ingName}`;
 
         const countSpan = document.createElement("span");
@@ -287,7 +299,8 @@ function buildTreeNode(recipe, depth) {
         li.appendChild(nameSpan);
         li.appendChild(countSpan);
 
-        const subRecipes = CraftMander.recipeLookup[ingId];
+        // Currency ingredients can't be sub-crafted — no toggle
+        const subRecipes = !isCurrency && CraftMander.recipeLookup[ing.item_id];
         if (subRecipes && subRecipes.length > 0 && depth < 4) {
             const toggle = document.createElement("button");
             toggle.className = "tree-toggle";
