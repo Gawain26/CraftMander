@@ -8,6 +8,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const previewUl     = document.getElementById("libraryRecipes");
     const actionsDiv    = document.getElementById("libraryActions");
     const watchUl       = document.getElementById("explorerWatchlist");
+    const clearBtn      = document.getElementById("clearWatchlistBtn");
 
     if (!libraryListUl || !previewTitle || !previewUl || !actionsDiv || !watchUl) {
         console.error("Libraries: missing DOM elements");
@@ -65,6 +66,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         li.addEventListener("click", () => {
             libraryListUl.querySelectorAll("li").forEach(el => el.classList.remove("active"));
             li.classList.add("active");
+            activeLibName   = libName;
+            activeRecipeIds = libraries[libName];
             selectLibrary(libName, libraries[libName]);
         });
         libraryListUl.appendChild(li);
@@ -72,6 +75,19 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     // Initial watchlist render
     renderWatchlist(watchUl);
+
+    // Track the currently selected library so clear can refresh the preview
+    let activeLibName    = null;
+    let activeRecipeIds  = null;
+
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            clearWatchlist(() => {
+                renderWatchlist(watchUl);
+                if (activeLibName) selectLibrary(activeLibName, activeRecipeIds);
+            });
+        });
+    }
 
     function selectLibrary(libName, recipeIds) {
         previewTitle.textContent = libName;

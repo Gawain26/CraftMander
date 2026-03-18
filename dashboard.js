@@ -41,23 +41,17 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     // Clear watchlist
     clearBtn.addEventListener("click", () => {
-        if (CraftMander.watchlist.length === 0) return;
-        const confirmed = confirm(
-            `Clear your entire watchlist?\n\n${CraftMander.watchlist.length} item${CraftMander.watchlist.length !== 1 ? "s" : ""} will be removed. This cannot be undone.`
-        );
-        if (!confirmed) return;
-
-        CraftMander.watchlist = [];
-        saveWatchlist();
-        serialExcluded.clear();
-        if (serialMode) {
-            serialMode = false;
-            serialBtn.classList.remove("active");
-            serialBtn.title = "Enter serial mode";
-        }
-        currentCraftableMap = {};
-        renderDashboardWatchlist(watchUl);
-        renderSerialSummary();
+        clearWatchlist(() => {
+            serialExcluded.clear();
+            if (serialMode) {
+                serialMode = false;
+                serialBtn.classList.remove("active");
+                serialBtn.title = "Enter serial mode";
+            }
+            currentCraftableMap = {};
+            renderDashboardWatchlist(watchUl);
+            renderSerialSummary();
+        });
     });
 
     loadBtn.addEventListener("click", async () => {

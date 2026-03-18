@@ -300,6 +300,36 @@ li.empty-state {
     transform: none;
 }
 
+/* ── Drag to reorder ─────────────────────────────────────────── */
+.drag-handle {
+    color: var(--border);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: grab;
+    flex-shrink: 0;
+    padding: 0 2px;
+    transition: color var(--transition);
+    user-select: none;
+}
+
+li:hover .drag-handle {
+    color: var(--muted);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+li.dragging {
+    opacity: 0.4;
+}
+
+li.drag-over {
+    border-color: var(--accent);
+    background: var(--surface3);
+    box-shadow: inset 0 2px 0 var(--accent);
+}
+
 /* ── Badges ──────────────────────────────────────────────────── */
 .badge {
     font-size: 0.72rem;

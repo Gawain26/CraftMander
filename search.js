@@ -6,14 +6,25 @@ window.addEventListener("DOMContentLoaded", async () => {
     const input     = document.getElementById("recipeSearch");
     const resultsUl = document.getElementById("searchResults");
     const watchUl   = document.getElementById("explorerWatchlist");
+    const clearBtn  = document.getElementById("clearWatchlistBtn");
 
     if (!input || !resultsUl || !watchUl) {
         console.error("Explorer: missing DOM elements");
         return;
     }
 
+    const rerender = () => {
+        renderWatchlist(watchUl, {}, null, null, null, null);
+        // Re-render search results so "✔ Added" states reflect cleared list
+        renderSearchResults(input.value.trim().toLowerCase(), resultsUl, watchUl);
+    };
+
     // Initial watchlist render (no craftable info — materials not loaded here)
     renderWatchlist(watchUl);
+
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => clearWatchlist(rerender));
+    }
 
     input.addEventListener("input", () => {
         renderSearchResults(input.value.trim().toLowerCase(), resultsUl, watchUl);
