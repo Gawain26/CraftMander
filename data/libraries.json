@@ -1,7 +1,7 @@
 {
   "_readme": "Replace every TODO value with the real recipe ID from: https://api.guildwars2.com/v2/recipes/search?output=ITEM_ID  Then strip all _name/_item_id/_note/_confirmed keys — they are only here to guide lookup. Final format is just: \"Library Name\": [id, id, id, ...]",
 
-  "HoT — Verdant Brink Provisioner":    {
+  "HoT — Verdant Brink Provisioner": {
     "Assassin's Krait Machete":         { "_item_id": 46281, "recipe_id": 5793 },
     "Assassin's Krait Star":            { "_item_id": 46040, "recipe_id": 4047 },
     "Assassin's Krait Shooter":         { "_item_id": 46186, "recipe_id": 4889 },
@@ -26,191 +26,177 @@
     "Cleric's Masquerade Gloves":       { "_item_id": 11248, "recipe_id": 2371 },
     "Cleric's Noble Gloves":            { "_item_id": 11835, "recipe_id": 1603 },
     "Cleric's Gladiator Gauntlets":     { "_item_id": 10710, "recipe_id": 649  },
-	"Apothecary's Krait Ripper":        { "_item_id": 36779, "recipe_id": 6702 },
-	"Apothecary's Krait Crook":         { "_item_id": 36813, "recipe_id": 6577 },
+    "Apothecary's Krait Ripper":        { "_item_id": 36779, "recipe_id": 6702 },
+    "Apothecary's Krait Crook":         { "_item_id": 36813, "recipe_id": 6577 },
     "Apothecary's Krait Recurve Bow":   { "_item_id": 36750, "recipe_id": 6601 },
     "Apothecary's Masquerade Mantle":   { "_item_id": 36892, "recipe_id": 6678 },
     "Apothecary's Noble Shoulders":     { "_item_id": 36891, "recipe_id": 6654 },
     "Apothecary's Gladiator Pauldrons": { "_item_id": 36746, "recipe_id": 6546 }
   },
-  
+
   "HoT — Auric Basin Provisioner": {
-    "Bringer's Krait Morning Star": {
-      "_item_id": 38336,
-      "recipe_id": 6925
-    },
-    "Bringer's Krait Wand": {
-      "_item_id": 38415,
-      "recipe_id": 6945
-    },
-    "Bringer's Krait Recurve Bow": {
-      "_item_id": 38367,
-      "recipe_id": 6986
-    },
-    "Giver's Masquerade Mask": {
-      "_item_id": 38228,
-      "recipe_id": 6821
-    },
-    "Giver's Noble Mask": {
-      "_item_id": 38264,
-      "recipe_id": 6860
-    },
-    "Giver's Gladiator Helm": {
-      "_item_id": 38179,
-      "recipe_id": 6774
-    },
-    "Valkyrie Krait Morning Star": {
-      "_item_id": 15352,
-      "recipe_id": 5881
-    },
-    "Valkyrie Krait Crook": {
-      "_item_id": 13895,
-      "recipe_id": 4131
-    },
-    "Valkyrie Krait Brazier": {
-      "_item_id": 14566,
-      "recipe_id": 4809
-    },
-    "Valkyrie Masquerade Raiments": {
-      "_item_id": 11295,
-      "recipe_id": 2544
-    },
-    "Valkyrie Noble Coat": {
-      "_item_id": 11798,
-      "recipe_id": 1650
-    },
-    "Valkyrie Gladiator Chestplate": {
-      "_item_id": 10722,
-      "recipe_id": 696
-    },
-    "Rampager's Krait Battleaxe": {
-      "_item_id": 15427,
-      "recipe_id": 5921
-    },
-    "Rampager's Krait Wand": {
-      "_item_id": 13928,
-      "recipe_id": 3973
-    },
-    "Rampager's Krait Shooter": {
-      "_item_id": 14648,
-      "recipe_id": 4891
-    },
-    "Rampager's Masquerade Leggings": {
-      "_item_id": 11167,
-      "recipe_id": 2332
-    },
-    "Rampager's Noble Pants": {
-      "_item_id": 11754,
-      "recipe_id": 1480
-    },
-    "Rampager's Gladiator Legplates": {
-      "_item_id": 10699,
-      "recipe_id": 820
-    }
+    "Bringer's Krait Morning Star":   { "_item_id": 38336, "recipe_id": 6925 },
+    "Bringer's Krait Wand":           { "_item_id": 38415, "recipe_id": 6945 },
+    "Bringer's Krait Recurve Bow":    { "_item_id": 38367, "recipe_id": 6986 },
+    "Giver's Masquerade Mask":        { "_item_id": 38228, "recipe_id": 6821 },
+    "Giver's Noble Mask":             { "_item_id": 38264, "recipe_id": 6860 },
+    "Giver's Gladiator Helm":         { "_item_id": 38179, "recipe_id": 6774 },
+    "Valkyrie Krait Morning Star":    { "_item_id": 15352, "recipe_id": 5881 },
+    "Valkyrie Krait Crook":           { "_item_id": 13895, "recipe_id": 4131 },
+    "Valkyrie Krait Brazier":         { "_item_id": 14566, "recipe_id": 4809 },
+    "Valkyrie Masquerade Raiments":   { "_item_id": 11295, "recipe_id": 2544 },
+    "Valkyrie Noble Coat":            { "_item_id": 11798, "recipe_id": 1650 },
+    "Valkyrie Gladiator Chestplate":  { "_item_id": 10722, "recipe_id": 696  },
+    "Rampager's Krait Battleaxe":     { "_item_id": 15427, "recipe_id": 5921 },
+    "Rampager's Krait Wand":          { "_item_id": 13928, "recipe_id": 3973 },
+    "Rampager's Krait Shooter":       { "_item_id": 14648, "recipe_id": 4891 },
+    "Rampager's Masquerade Leggings": { "_item_id": 11167, "recipe_id": 2332 },
+    "Rampager's Noble Pants":         { "_item_id": 11754, "recipe_id": 1480 },
+    "Rampager's Gladiator Legplates": { "_item_id": 10699, "recipe_id": 820  }
   },
-  
+
   "HoT — Tangled Depths Provisioner": {
-    "Berserker's Krait Shell": {
-      "_item_id": 15391,
-      "recipe_id": 5752
-    },
-    "Berserker's Krait Star": {
-      "_item_id": 13976,
-      "recipe_id": 4048
-    },
-    "Berserker's Krait Brazier": {
-      "_item_id": 14563,
-      "recipe_id": 4806
-    },
-    "Berserker's Masquerade Mantle": {
-      "_item_id": 11341,
-      "recipe_id": 2457
-    },
-    "Berserker's Noble Shoulders": {
-      "_item_id": 11921,
-      "recipe_id": 1521
-    },
-    "Berserker's Gladiator Pauldrons": {
-      "_item_id": 10691,
-      "recipe_id": 777
-    },
-    "Carrion Krait Battleaxe": {
-      "_item_id": 15423,
-      "recipe_id": 5917
-    },
-    "Carrion Krait Star": {
-      "_item_id": 13973,
-      "recipe_id": 4045
-    },
-    "Carrion Krait Recurve Bow": {
-      "_item_id": 14428,
-      "recipe_id": 5012
-    },
-    "Carrion Masquerade Gloves": {
-      "_item_id": 11247,
-      "recipe_id": 2370
-    },
-    "Carrion Noble Gloves": {
-      "_item_id": 11834,
-      "recipe_id": 1602
-    },
-    "Carrion Gladiator Gauntlets": {
-      "_item_id": 10709,
-      "recipe_id": 648
-    },
-    "Knight's Krait Warhammer": {
-      "_item_id": 15512,
-      "recipe_id": 5838
-    },
-    "Knight's Krait Crook": {
-      "_item_id": 13894,
-      "recipe_id": 4130
-    },
-    "Knight's Krait Whelk": {
-      "_item_id": 14516,
-      "recipe_id": 4934
-    },
-    "Knight's Masquerade Boots": {
-      "_item_id": 11126,
-      "recipe_id": 2417
-    },
-    "Knight's Noble Boots": {
-      "_item_id": 11881,
-      "recipe_id": 1565
-    },
-    "Knight's Gladiator Boots": {
-      "_item_id": 10707,
-      "recipe_id": 611
-    },
-    "Apothecary's Krait Ripper": {
-      "_item_id": 36779,
-      "recipe_id": 6702
-    },
-    "Apothecary's Krait Wand": {
-      "_item_id": 36780,
-      "recipe_id": 6576
-    },
-    "Apothecary's Krait Shooter": {
-      "_item_id": 36812,
-      "recipe_id": 6604
-    },
-    "Apothecary's Masquerade Mask": {
-      "_item_id": 36844,
-      "recipe_id": 6676
-    },
-    "Apothecary's Noble Mask": {
-      "_item_id": 36842,
-      "recipe_id": 6652
-    },
-    "Apothecary's Gladiator Helm": {
-      "_item_id": 36806,
-      "recipe_id": 6544
-    }
+    "Berserker's Krait Shell":         { "_item_id": 15391, "recipe_id": 5752 },
+    "Berserker's Krait Star":          { "_item_id": 13976, "recipe_id": 4048 },
+    "Berserker's Krait Brazier":       { "_item_id": 14563, "recipe_id": 4806 },
+    "Berserker's Masquerade Mantle":   { "_item_id": 11341, "recipe_id": 2457 },
+    "Berserker's Noble Shoulders":     { "_item_id": 11921, "recipe_id": 1521 },
+    "Berserker's Gladiator Pauldrons": { "_item_id": 10691, "recipe_id": 777  },
+    "Carrion Krait Battleaxe":         { "_item_id": 15423, "recipe_id": 5917 },
+    "Carrion Krait Star":              { "_item_id": 13973, "recipe_id": 4045 },
+    "Carrion Krait Recurve Bow":       { "_item_id": 14428, "recipe_id": 5012 },
+    "Carrion Masquerade Gloves":       { "_item_id": 11247, "recipe_id": 2370 },
+    "Carrion Noble Gloves":            { "_item_id": 11834, "recipe_id": 1602 },
+    "Carrion Gladiator Gauntlets":     { "_item_id": 10709, "recipe_id": 648  },
+    "Knight's Krait Warhammer":        { "_item_id": 15512, "recipe_id": 5838 },
+    "Knight's Krait Crook":            { "_item_id": 13894, "recipe_id": 4130 },
+    "Knight's Krait Whelk":            { "_item_id": 14516, "recipe_id": 4934 },
+    "Knight's Masquerade Boots":       { "_item_id": 11126, "recipe_id": 2417 },
+    "Knight's Noble Boots":            { "_item_id": 11881, "recipe_id": 1565 },
+    "Knight's Gladiator Boots":        { "_item_id": 10707, "recipe_id": 611  },
+    "Apothecary's Krait Ripper":       { "_item_id": 36779, "recipe_id": 6702 },
+    "Apothecary's Krait Wand":         { "_item_id": 36780, "recipe_id": 6576 },
+    "Apothecary's Krait Shooter":      { "_item_id": 36812, "recipe_id": 6604 },
+    "Apothecary's Masquerade Mask":    { "_item_id": 36844, "recipe_id": 6676 },
+    "Apothecary's Noble Mask":         { "_item_id": 36842, "recipe_id": 6652 },
+    "Apothecary's Gladiator Helm":     { "_item_id": 36806, "recipe_id": 6544 }
   },
 
+  "SoTO — Skywatch Archipelago Provisioner": {
+    "Storm's Eye Axe":       { "_item_id": 100101, "recipe_id": 13966 },
+    "Storm's Eye Dagger":    { "_item_id": 100691, "recipe_id": 13954 },
+    "Storm's Eye Focus":     { "_item_id": 100881, "recipe_id": 13986 },
+    "Storm's Eye Greatsword":{ "_item_id": 100895, "recipe_id": 13943 },
+    "Storm's Eye Hammer":    { "_item_id": 100632, "recipe_id": 13953 },
+    "Storm's Eye Longbow":   { "_item_id": 100220, "recipe_id": 13999 },
+    "Storm's Eye Mace":      { "_item_id": 100315, "recipe_id": 13955 },
+    "Storm's Eye Pistol":    { "_item_id": 100952, "recipe_id": 13980 },
+    "Storm's Eye Rifle":     { "_item_id": 100166, "recipe_id": 13950 },
+    "Storm's Eye Scepter":   { "_item_id": 100874, "recipe_id": 13973 },
+    "Storm's Eye Shield":    { "_item_id": 100374, "recipe_id": 13968 },
+    "Storm's Eye Short Bow": { "_item_id": 99959,  "recipe_id": 14013 },
+    "Storm's Eye Staff":     { "_item_id": 100844, "recipe_id": 14012 },
+    "Storm's Eye Sword":     { "_item_id": 100415, "recipe_id": 13997 },
+    "Storm's Eye Torch":     { "_item_id": 100650, "recipe_id": 13962 },
+    "Storm's Eye Warhorn":   { "_item_id": 100373, "recipe_id": 13976 }
+  },
 
+  "SoTO — Amnytas Provisioner": {
+    "Shaman's Stormforged Axe":       { "_item_id": 100130, "recipe_id": 13988 },
+    "Shaman's Stormforged Dagger":    { "_item_id": 100623, "recipe_id": 14001 },
+    "Shaman's Stormforged Focus":     { "_item_id": 100601, "recipe_id": 13964 },
+    "Shaman's Stormforged Greatsword":{ "_item_id": 100215, "recipe_id": 13971 },
+    "Shaman's Stormforged Hammer":    { "_item_id": 100224, "recipe_id": 14004 },
+    "Shaman's Stormforged Longbow":   { "_item_id": 100805, "recipe_id": 14000 },
+    "Shaman's Stormforged Mace":      { "_item_id": 100915, "recipe_id": 14027 },
+    "Shaman's Stormforged Pistol":    { "_item_id": 100249, "recipe_id": 13958 },
+    "Shaman's Stormforged Rifle":     { "_item_id": 100703, "recipe_id": 14033 },
+    "Shaman's Stormforged Scepter":   { "_item_id": 100143, "recipe_id": 14017 },
+    "Shaman's Stormforged Shield":    { "_item_id": 100443, "recipe_id": 13979 },
+    "Shaman's Stormforged Short Bow": { "_item_id": 100232, "recipe_id": 14006 },
+    "Shaman's Stormforged Staff":     { "_item_id": 100047, "recipe_id": 13967 },
+    "Shaman's Stormforged Sword":     { "_item_id": 100235, "recipe_id": 14023 },
+    "Shaman's Stormforged Torch":     { "_item_id": 99958,  "recipe_id": 14014 },
+    "Shaman's Stormforged Warhorn":   { "_item_id": 100855, "recipe_id": 14021 }
+  },
 
-  "Janthir — TODO": {
-    "_note": "Find item IDs from https://wiki.guildwars2.com/wiki/Faction_Provisioner Janthir section. Wiki flagged a bug with medium armor shoulders as of early 2026 — verify in-game before adding."
+  "SoTO — Inner Nayos Provisioner": {
+    "Grieving Consecrated Saryx Axe":       { "_item_id": 101162, "recipe_id": 14048 },
+    "Grieving Consecrated Saryx Dagger":    { "_item_id": 101271, "recipe_id": 14062 },
+    "Grieving Consecrated Saryx Focus":     { "_item_id": 101160, "recipe_id": 14063 },
+    "Grieving Consecrated Saryx Greatsword":{ "_item_id": 101174, "recipe_id": 14045 },
+    "Grieving Consecrated Saryx Hammer":    { "_item_id": 101161, "recipe_id": 14066 },
+    "Grieving Consecrated Saryx Longbow":   { "_item_id": 101212, "recipe_id": 14053 },
+    "Grieving Consecrated Saryx Mace":      { "_item_id": 101247, "recipe_id": 14060 },
+    "Grieving Consecrated Saryx Pistol":    { "_item_id": 101248, "recipe_id": 14055 },
+    "Grieving Consecrated Saryx Rifle":     { "_item_id": 101138, "recipe_id": 14064 },
+    "Grieving Consecrated Saryx Scepter":   { "_item_id": 101294, "recipe_id": 14046 },
+    "Grieving Consecrated Saryx Shield":    { "_item_id": 101273, "recipe_id": 14065 },
+    "Grieving Consecrated Saryx Short Bow": { "_item_id": 101192, "recipe_id": 14059 },
+    "Grieving Consecrated Saryx Staff":     { "_item_id": 101134, "recipe_id": 14054 },
+    "Grieving Consecrated Saryx Sword":     { "_item_id": 101214, "recipe_id": 14061 },
+    "Grieving Consecrated Saryx Torch":     { "_item_id": 101283, "recipe_id": 14051 },
+    "Grieving Consecrated Saryx Warhorn":   { "_item_id": 101257, "recipe_id": 14058 }
+  },
+
+  "JW — Lowland Shore Provisioner": {
+    "Titanplate Heavy Helmet":     { "_item_id": 103420, "recipe_id": 14887 },
+    "Titanplate Heavy Pauldrons":  { "_item_id": 103323, "recipe_id": 14125 },
+    "Titanplate Heavy Breastplate":{ "_item_id": 102679, "recipe_id": 14588 },
+    "Titanplate Heavy Gauntlets":  { "_item_id": 103044, "recipe_id": 14187 },
+    "Titanplate Heavy Cuisses":    { "_item_id": 103397, "recipe_id": 14699 },
+    "Titanplate Heavy Greaves":    { "_item_id": 102638, "recipe_id": 14631 },
+    "Titanplate Medium Mask":      { "_item_id": 102247, "recipe_id": 14522 },
+    "Titanplate Medium Jacket":    { "_item_id": 103055, "recipe_id": 14667 },
+    "Titanplate Medium Gloves":    { "_item_id": 102340, "recipe_id": 14636 },
+    "Titanplate Medium Leggings":  { "_item_id": 102609, "recipe_id": 14132 },
+    "Titanplate Medium Boots":     { "_item_id": 102910, "recipe_id": 14143 },
+    "Titanplate Light Crown":      { "_item_id": 102427, "recipe_id": 14255 },
+    "Titanplate Light Mantle":     { "_item_id": 102578, "recipe_id": 14893 },
+    "Titanplate Light Regalia":    { "_item_id": 102389, "recipe_id": 14191 },
+    "Titanplate Light Gloves":     { "_item_id": 102278, "recipe_id": 14807 },
+    "Titanplate Light Pants":      { "_item_id": 102464, "recipe_id": 14663 },
+    "Titanplate Light Shoes":      { "_item_id": 103014, "recipe_id": 14188 }
+  },
+
+  "JW — Janthir Syntri Provisioner": {
+    "True Sight Heavy Mask":       { "_item_id": 104346, "recipe_id": 15061 },
+    "True Sight Heavy Shoulders":  { "_item_id": 104391, "recipe_id": 15030 },
+    "True Sight Heavy Coat":       { "_item_id": 104369, "recipe_id": 15037 },
+    "True Sight Heavy Gloves":     { "_item_id": 104254, "recipe_id": 15045 },
+    "True Sight Heavy Leggings":   { "_item_id": 104420, "recipe_id": 15027 },
+    "True Sight Heavy Boots":      { "_item_id": 104281, "recipe_id": 15048 },
+    "True Sight Medium Mask":      { "_item_id": 104247, "recipe_id": 15055 },
+    "True Sight Medium Shoulders": { "_item_id": 104419, "recipe_id": 15070 },
+    "True Sight Medium Coat":      { "_item_id": 104430, "recipe_id": 15067 },
+    "True Sight Medium Gloves":    { "_item_id": 104409, "recipe_id": 15034 },
+    "True Sight Medium Leggings":  { "_item_id": 104422, "recipe_id": 15042 },
+    "True Sight Medium Boots":     { "_item_id": 104412, "recipe_id": 15038 },
+    "True Sight Light Mask":       { "_item_id": 104304, "recipe_id": 15063 },
+    "True Sight Light Shoulders":  { "_item_id": 104455, "recipe_id": 15080 },
+    "True Sight Light Coat":       { "_item_id": 104373, "recipe_id": 15046 },
+    "True Sight Light Gloves":     { "_item_id": 104350, "recipe_id": 15074 },
+    "True Sight Light Leggings":   { "_item_id": 104352, "recipe_id": 15060 },
+    "True Sight Light Boots":      { "_item_id": 104305, "recipe_id": 15044 }
+  },
+
+  "JW — Bava Nisos Provisioner": {
+    "Lightborne Axe":        { "_item_id": 104859, "recipe_id": 15130 },
+    "Lightborne Dagger":     { "_item_id": 105008, "recipe_id": 15141 },
+    "Lightborne Focus":      { "_item_id": 104989, "recipe_id": 15149 },
+    "Lightborne Greatsword": { "_item_id": 104860, "recipe_id": 15160 },
+    "Lightborne Hammer":     { "_item_id": 104732, "recipe_id": 15142 },
+    "Lightborne Longbow":    { "_item_id": 104792, "recipe_id": 15152 },
+    "Lightborne Mace":       { "_item_id": 104691, "recipe_id": 15157 },
+    "Lightborne Pistol":     { "_item_id": 104875, "recipe_id": 15147 },
+    "Lightborne Rifle":      { "_item_id": 104721, "recipe_id": 15124 },
+    "Lightborne Scepter":    { "_item_id": 104916, "recipe_id": 15111 },
+    "Lightborne Shield":     { "_item_id": 104905, "recipe_id": 15156 },
+    "Lightborne Short Bow":  { "_item_id": 104878, "recipe_id": 15121 },
+    "Lightborne Spear":      { "_item_id": 104761, "recipe_id": 15150 },
+    "Lightborne Staff":      { "_item_id": 104705, "recipe_id": 15132 },
+    "Lightborne Sword":      { "_item_id": 104787, "recipe_id": 15127 },
+    "Lightborne Torch":      { "_item_id": 104918, "recipe_id": 15146 },
+    "Lightborne Warhorn":    { "_item_id": 104950, "recipe_id": 15123 }
   }
 }
