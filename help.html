@@ -423,13 +423,17 @@
                 <ol class="steps">
                     <li>Go to <strong>account.arena.net/applications</strong> and log in with your GW2 account.</li>
                     <li>Click <strong>New Key</strong> and give it a name (e.g. "CraftMander").</li>
-                    <li>Enable the <strong>inventories</strong> permission. No other permissions are needed.</li>
+                    <li>Enable the <strong>inventories</strong> and <strong>wallet</strong> permissions.</li>
                     <li>Copy the generated key and paste it into the API Key field on the Dashboard.</li>
                     <li>Click <strong>Load Materials</strong>. Your account name and material counts will appear.</li>
                 </ol>
                 <div class="callout tip">
                     <span class="callout-icon">💡</span>
                     <span>Your key is saved in your browser's local storage after the first successful load, so you won't need to re-enter it each visit.</span>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <span>The <strong>wallet</strong> permission is needed to check craftability of recipes that require wallet currencies (such as Research Notes or Rift Essence) as ingredients. Without it, those recipes will always show as uncraftable.</span>
                 </div>
 
             </section>
@@ -667,6 +671,10 @@
                         <tr>
                             <td>have/need count</td>
                             <td>Shows how many of this ingredient you have vs. how many are needed. <span style="color:var(--green)">Green</span> = sufficient, <span style="color:var(--red)">red</span> = insufficient.</td>
+                        </tr>
+                        <tr>
+                            <td>Currency ingredients</td>
+                            <td>Some recipes require wallet currencies (e.g. Research Notes, Rift Essence) instead of crafted items. These are shown by name with your current wallet balance — they have no sub-recipe toggle since currencies can't be crafted.</td>
                         </tr>
                     </tbody>
                 </table>
