@@ -35,18 +35,19 @@ function buildRecipeLookup() {
 
 // ── Material cache (sessionStorage) ──────────────────────────────────────────
 // Materials and wallet are cached for the lifetime of the browser tab.
-// They are only re-fetched when the user explicitly clicks "Load Materials".
+// They are only re-fetched when the user explicitly clicks "Refresh Materials".
 // Cache is keyed by API key so switching accounts always fetches fresh data.
 
 const CACHE_KEY_MATERIALS = "CraftManderMaterials";
 const CACHE_KEY_WALLET    = "CraftManderWallet";
 const CACHE_KEY_ACCOUNT   = "CraftManderAccountName";
 const CACHE_KEY_API_KEY   = "CraftManderCachedKey"; // which key the cache belongs to
+const CACHE_KEY_TIMESTAMP = "CraftManderFetchedAt"; // ISO string of when data was fetched
 
 /**
  * Restore materials/wallet from sessionStorage into CraftMander globals.
- * Returns the cached account name if available, or null if no cache exists
- * (or if the cache belongs to a different API key).
+ * Returns { accountName, fetchedAt } on a cache hit, or null on a miss /
+ * key mismatch. fetchedAt is a Date of when the data was originally fetched.
  */
 function restoreMaterialCache(apiKey) {
     try {
@@ -60,7 +61,9 @@ function restoreMaterialCache(apiKey) {
         CraftMander.materials = JSON.parse(rawMaterials);
         CraftMander.wallet    = rawWallet ? JSON.parse(rawWallet) : {};
 
-        return sessionStorage.getItem(CACHE_KEY_ACCOUNT) || null;
+        const accountName = sessionStorage.getItem(CACHE_KEY_ACCOUNT) || null;
+        const fetchedAt   = new Date(sessionStorage.getItem(CACHE_KEY_TIMESTAMP) || Date.now());
+        return { accountName, fetchedAt };
     } catch {
         return null;
     }
@@ -75,6 +78,7 @@ function saveMaterialCache(apiKey, accountName) {
         sessionStorage.setItem(CACHE_KEY_MATERIALS, JSON.stringify(CraftMander.materials));
         sessionStorage.setItem(CACHE_KEY_WALLET,    JSON.stringify(CraftMander.wallet));
         sessionStorage.setItem(CACHE_KEY_ACCOUNT,   accountName || "");
+        sessionStorage.setItem(CACHE_KEY_TIMESTAMP, new Date().toISOString());
     } catch {
         // sessionStorage quota exceeded or unavailable — silently ignore
     }
@@ -114,15 +118,31 @@ async function loadAccountName(apiKey) {
  * CraftMander.materials (item stacks) and CraftMander.wallet (currency balances).
  * Both are keyed by their respective IDs for O(1) lookup in crafting.js.
  *
- * After a successful fetch, results are cached in sessionStorage so that
- * navigating between pages doesn't trigger additional API calls.
+ * If `force` is false (the default), a valid sessionStorage cache for this API
+ * key is used instead of making network requests — no proxy hit at all.
+ * Pass `force: true` when the user explicitly clicks "Refresh Materials".
  */
-async function loadMaterials(apiKey) {
+async function loadMaterials(apiKey, { force = false } = {}) {
     if (!apiKey) {
         apiKey = localStorage.getItem("CraftManderAPIKey");
     }
     if (!apiKey) throw new Error("No API key provided");
 
+    // ── Cache hit ─────────────────────────────────────────────────────────
+    if (!force) {
+        const cached = restoreMaterialCache(apiKey);
+        if (cached !== null) {
+            console.log(
+                `Restored ${Object.keys(CraftMander.materials).length} material stacks ` +
+                `and ${Object.keys(CraftMander.wallet).length} wallet currencies from cache.`
+            );
+            return cached; // { accountName, fetchedAt }
+        }
+    } else {
+        clearMaterialCache();
+    }
+
+    // ── Cache miss — fetch from proxy ─────────────────────────────────────
     const [materialsRes, walletRes] = await Promise.all([
         fetch(PROXY_URL, {
             method:  "POST",
@@ -168,4 +188,8 @@ async function loadMaterials(apiKey) {
 
     localStorage.setItem("CraftManderAPIKey", apiKey);
     console.log(`Loaded ${Object.keys(CraftMander.materials).length} material stacks, ${Object.keys(CraftMander.wallet).length} wallet currencies`);
+
+    // Return null here; the caller (api-panel) will fetch the account name
+    // separately and pass it to saveMaterialCache.
+    return null;
 }

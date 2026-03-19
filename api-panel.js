@@ -33,7 +33,7 @@
         <!-- Key input (hidden until pencil clicked) -->
         <div class="api-key-input-row hidden" id="apiKeyInputRow">
             <input
-                type="password"
+                type="text"
                 id="apiKeyInputPanel"
                 class="api-key-input"
                 placeholder="Paste your API key…"
@@ -126,9 +126,6 @@
 
     function updateMaterialsLight() {
         const stale = isWatchlistStale();
-        const ts = $("lightMaterialsTs");
-        if (!ts) return;
-        // if the light is currently 'on' or 'stale', re-evaluate
         const row = $("lightMaterials");
         if (!row) return;
         const cur = row.querySelector(".api-light").dataset.state;
@@ -185,21 +182,38 @@
         if (tabDot) tabDot.dataset.state = hasKey ? "on" : "off";
     }
 
-    // ── Load materials (the real work) ─────────────────────────────────────
-    async function doFetch(key) {
+    // ── Load materials ──────────────────────────────────────────────────────
+    // force=false  → use sessionStorage cache if available (page navigation)
+    // force=true   → always hit the proxy (explicit Refresh button or new key)
+    async function doFetch(key, force = false) {
         const refreshBtn  = $("apiRefreshBtn");
         const refreshIcon = $("apiRefreshIcon");
 
         if (refreshBtn) refreshBtn.disabled = true;
         if (refreshIcon) refreshIcon.classList.add("spinning");
-        setStatus("Fetching from GW2…", "loading");
+
+        // Only show "Fetching…" when we're actually going to the network.
+        // For a cache restore we'll update silently and fast.
+        const willFetch = force || !hasCacheForKey(key);
+        if (willFetch) setStatus("Fetching from GW2…", "loading");
 
         try {
-            // loadMaterials and loadAccountName come from data.js (loaded before this script)
-            const [_, accountName] = await Promise.all([
-                window.loadMaterials(key),
-                window.loadAccountName(key),
-            ]);
+            // loadMaterials returns { accountName, fetchedAt } on a cache hit,
+            // or null on a network fetch (account name fetched separately below).
+            const cached = await window.loadMaterials(key, { force });
+
+            let accountName, fetchedAt;
+
+            if (cached !== null) {
+                // Cache hit — no network request was made
+                accountName = cached.accountName;
+                fetchedAt   = cached.fetchedAt;
+            } else {
+                // Network fetch — also get account name and persist to cache
+                accountName = await window.loadAccountName(key);
+                fetchedAt   = new Date();
+                window.saveMaterialCache(key, accountName || "");
+            }
 
             // Infer permissions from non-empty results
             const matCount = Object.keys(window.CraftMander?.materials ?? {}).length;
@@ -209,8 +223,10 @@
             setLight("lightWallet",      walCount > 0 ? "on" : "warn");
             setLight("lightMaterials",   "on");
 
+            // Show the original fetch time, not the current time — so navigating
+            // between pages doesn't make the timestamp jump to "now".
             const tsEl = $("lightMaterialsTs");
-            if (tsEl) tsEl.textContent = formatTime(new Date());
+            if (tsEl) tsEl.textContent = formatTime(fetchedAt);
 
             // Account name
             const nameEl  = $("apiAccountName");
@@ -227,16 +243,17 @@
             // Snapshot watchlist now that we have fresh data
             snapshotWatchlist();
 
-            setStatus(`${matCount} material stacks loaded.`, "success");
+            if (willFetch) {
+                setStatus(`${matCount} material stacks loaded.`, "success");
+                setTimeout(() => setStatus("", ""), 3500);
+            }
+
             setKeyDisplay(true);
 
             // Notify dashboard.js if it exists on this page
             document.dispatchEvent(new CustomEvent("craftmander:materials-loaded", {
                 detail: { accountName }
             }));
-
-            // Hide status after a moment
-            setTimeout(() => setStatus("", ""), 3500);
 
         } catch (err) {
             console.error("[api-panel] fetch error:", err);
@@ -247,6 +264,16 @@
         } finally {
             if (refreshBtn) refreshBtn.disabled = false;
             if (refreshIcon) refreshIcon.classList.remove("spinning");
+        }
+    }
+
+    // Quick check: does sessionStorage already hold a cache for this key?
+    function hasCacheForKey(key) {
+        try {
+            return sessionStorage.getItem("CraftManderCachedKey") === key &&
+                   sessionStorage.getItem("CraftManderMaterials") !== null;
+        } catch {
+            return false;
         }
     }
 
@@ -261,15 +288,13 @@
             return;
         }
 
-        // Auto-fetch on page load
-        // Wait for loadMaterials etc. to be available (they come from data.js / loadGameData)
-        // data.js must be loaded before api-panel.js in every HTML file.
         await waitForGameData();
-        await doFetch(storedKey);
+        // force=false — will use cache if available, avoiding a proxy hit on
+        // every page navigation within the same tab.
+        await doFetch(storedKey, false);
     }
 
     // data.js exposes loadMaterials globally; game data is loaded by loadGameData() in each page.
-    // We just need loadMaterials to exist before fetching.
     function waitForGameData(maxMs = 8000) {
         return new Promise((resolve, reject) => {
             if (typeof window.loadMaterials === "function") { resolve(); return; }
@@ -304,7 +329,7 @@
             else hideKeyInput();
         });
 
-        // Save key
+        // Save key — always force a fresh fetch so the new key is validated
         async function saveKey() {
             const input = $("apiKeyInputPanel");
             const key = input?.value.trim();
@@ -313,7 +338,7 @@
             setKeyDisplay(true);
             hideKeyInput();
             await waitForGameData();
-            await doFetch(key);
+            await doFetch(key, true); // force=true: new key, must hit the network
         }
 
         $("apiKeySaveBtn")?.addEventListener("click", saveKey);
@@ -322,11 +347,11 @@
             if (e.key === "Escape") hideKeyInput();
         });
 
-        // Refresh
+        // Refresh button — always force a network fetch
         $("apiRefreshBtn")?.addEventListener("click", async () => {
             const key = localStorage.getItem("CraftManderAPIKey");
             if (!key) { openPanel(); showKeyInput(); return; }
-            await doFetch(key);
+            await doFetch(key, true); // force=true: explicit user refresh
         });
 
         // Watch for watchlist changes from any page (localStorage events or direct mutations)
@@ -334,19 +359,6 @@
             if (e.key === "CraftManderWatchlist") updateMaterialsLight();
         });
 
-        // Also patch saveWatchlist if available to catch same-tab changes
-        const _origSave = window.saveWatchlist;
-        if (typeof _origSave === "function") {
-            window.saveWatchlist = function (...args) {
-                _origSave.apply(this, args);
-                updateMaterialsLight();
-            };
-        } else {
-            // saveWatchlist may not exist yet — patch after DOM ready
-            document.addEventListener("craftmander:watchlist-patched", updateMaterialsLight);
-        }
-
-        // Expose a hook for watchlist.js to call after it defines saveWatchlist
         window.__apiPanelOnSave = updateMaterialsLight;
     }
 
