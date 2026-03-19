@@ -27,12 +27,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // Parse the annotated format into { libName: [recipeId, ...] }
-    // Rules:
-    //   - Skip any top-level key starting with "_"
-    //   - Skip libraries whose value isn't a plain object (e.g. TODO stubs with only _note)
-    //   - Within a library, skip keys starting with "_"
-    //   - Skip entries where recipe_id is a string (i.e. still a TODO)
     const libraries = {};
 
     for (const [libName, libValue] of Object.entries(raw)) {
@@ -44,11 +38,10 @@ window.addEventListener("DOMContentLoaded", async () => {
             if (entryKey.startsWith("_")) continue;
             if (typeof entryValue !== "object") continue;
             const id = entryValue.recipe_id;
-            if (typeof id !== "number") continue; // skip TODOs (strings) and missing
+            if (typeof id !== "number") continue;
             recipeIds.push(id);
         }
 
-        // Only show the library if it has at least one resolved recipe
         if (recipeIds.length > 0) {
             libraries[libName] = recipeIds;
         }
@@ -76,7 +69,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Initial watchlist render
     renderWatchlist(watchUl);
 
-    // Track the currently selected library so clear can refresh the preview
     let activeLibName    = null;
     let activeRecipeIds  = null;
 
@@ -94,18 +86,19 @@ window.addEventListener("DOMContentLoaded", async () => {
         previewUl.innerHTML = "";
         actionsDiv.innerHTML = "";
 
+        // craftableMap values are now counts (number | undefined)
         const craftableMap = computeCraftables();
 
         for (const recipeId of recipeIds) {
             const recipe = CraftMander.recipes.find(r => r.id === recipeId);
             if (!recipe) continue;
 
-            const itemId    = recipe.output_item_id;
-            const item      = CraftMander.itemMap[itemId];
-            const itemName  = item?.name || `Item #${itemId}`;
-            const rarity    = item?.rarity || "";
-            const craftable = craftableMap[itemId];
-            const onList    = CraftMander.watchlist.includes(recipeId);
+            const itemId      = recipe.output_item_id;
+            const item        = CraftMander.itemMap[itemId];
+            const itemName    = item?.name || `Item #${itemId}`;
+            const rarity      = item?.rarity || "";
+            const craftCount  = craftableMap[itemId]; // number | undefined
+            const onList      = CraftMander.watchlist.includes(recipeId);
 
             const li = document.createElement("li");
 
@@ -115,10 +108,16 @@ window.addEventListener("DOMContentLoaded", async () => {
             if (rarity) nameSpan.classList.add("rarity-" + rarity.toLowerCase());
             li.appendChild(nameSpan);
 
-            if (craftable !== undefined) {
+            if (craftCount !== undefined) {
                 const badge = document.createElement("span");
-                badge.className = craftable ? "badge craftable" : "badge not-craftable";
-                badge.textContent = craftable ? "✓" : "✗";
+                if (craftCount > 0) {
+                    badge.className = "badge craftable";
+                    badge.textContent = craftCount > 1 ? `✓ ×${craftCount}` : "✓";
+                    badge.title = `Can craft ${craftCount} time${craftCount !== 1 ? "s" : ""}`;
+                } else {
+                    badge.className = "badge not-craftable";
+                    badge.textContent = "✗";
+                }
                 li.appendChild(badge);
             }
 

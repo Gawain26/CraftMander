@@ -33,6 +33,63 @@ function buildRecipeLookup() {
     }
 }
 
+// ── Material cache (sessionStorage) ──────────────────────────────────────────
+// Materials and wallet are cached for the lifetime of the browser tab.
+// They are only re-fetched when the user explicitly clicks "Load Materials".
+// Cache is keyed by API key so switching accounts always fetches fresh data.
+
+const CACHE_KEY_MATERIALS = "CraftManderMaterials";
+const CACHE_KEY_WALLET    = "CraftManderWallet";
+const CACHE_KEY_ACCOUNT   = "CraftManderAccountName";
+const CACHE_KEY_API_KEY   = "CraftManderCachedKey"; // which key the cache belongs to
+
+/**
+ * Restore materials/wallet from sessionStorage into CraftMander globals.
+ * Returns the cached account name if available, or null if no cache exists
+ * (or if the cache belongs to a different API key).
+ */
+function restoreMaterialCache(apiKey) {
+    try {
+        const cachedKey = sessionStorage.getItem(CACHE_KEY_API_KEY);
+        if (cachedKey !== apiKey) return null; // stale or different account
+
+        const rawMaterials = sessionStorage.getItem(CACHE_KEY_MATERIALS);
+        const rawWallet    = sessionStorage.getItem(CACHE_KEY_WALLET);
+        if (!rawMaterials) return null;
+
+        CraftMander.materials = JSON.parse(rawMaterials);
+        CraftMander.wallet    = rawWallet ? JSON.parse(rawWallet) : {};
+
+        return sessionStorage.getItem(CACHE_KEY_ACCOUNT) || null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Save materials/wallet to sessionStorage after a successful fetch.
+ */
+function saveMaterialCache(apiKey, accountName) {
+    try {
+        sessionStorage.setItem(CACHE_KEY_API_KEY,   apiKey);
+        sessionStorage.setItem(CACHE_KEY_MATERIALS, JSON.stringify(CraftMander.materials));
+        sessionStorage.setItem(CACHE_KEY_WALLET,    JSON.stringify(CraftMander.wallet));
+        sessionStorage.setItem(CACHE_KEY_ACCOUNT,   accountName || "");
+    } catch {
+        // sessionStorage quota exceeded or unavailable — silently ignore
+    }
+}
+
+/**
+ * Clear the material cache (e.g. on explicit refresh or account change).
+ */
+function clearMaterialCache() {
+    sessionStorage.removeItem(CACHE_KEY_MATERIALS);
+    sessionStorage.removeItem(CACHE_KEY_WALLET);
+    sessionStorage.removeItem(CACHE_KEY_ACCOUNT);
+    sessionStorage.removeItem(CACHE_KEY_API_KEY);
+}
+
 // Point this at your deployed Cloudflare Worker URL.
 // For local development with `wrangler dev`, use: "http://localhost:8787"
 const PROXY_URL = "https://gw2-proxy.strikingwolf26.workers.dev";
@@ -56,6 +113,9 @@ async function loadAccountName(apiKey) {
  * Fetch account/materials and account/wallet in parallel, populating
  * CraftMander.materials (item stacks) and CraftMander.wallet (currency balances).
  * Both are keyed by their respective IDs for O(1) lookup in crafting.js.
+ *
+ * After a successful fetch, results are cached in sessionStorage so that
+ * navigating between pages doesn't trigger additional API calls.
  */
 async function loadMaterials(apiKey) {
     if (!apiKey) {

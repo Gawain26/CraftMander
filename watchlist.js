@@ -25,6 +25,10 @@ function removeFromWatchlist(recipeId) {
 
 function saveWatchlist() {
     localStorage.setItem("CraftManderWatchlist", JSON.stringify(CraftMander.watchlist));
+    // Notify the API panel so it can update the stale-light state.
+    if (typeof window.__apiPanelOnSave === "function") {
+        window.__apiPanelOnSave();
+    }
 }
 
 /**
@@ -151,7 +155,6 @@ function renderWatchlist(ulElement, craftableMap = {}, onRemove = null, onSelect
             dragSrc = li;
             dragId  = recipeId;
             e.dataTransfer.effectAllowed = "move";
-            // Delay so the drag image captures the un-dimmed item
             requestAnimationFrame(() => li.classList.add("dragging"));
         });
 
@@ -179,7 +182,6 @@ function renderWatchlist(ulElement, craftableMap = {}, onRemove = null, onSelect
             li.classList.remove("drag-over");
             if (!dragSrc || dragSrc === li) return;
 
-            // Reorder CraftMander.watchlist
             const fromIdx = CraftMander.watchlist.indexOf(dragId);
             const toIdx   = CraftMander.watchlist.indexOf(recipeId);
             if (fromIdx === -1 || toIdx === -1) return;
@@ -188,7 +190,6 @@ function renderWatchlist(ulElement, craftableMap = {}, onRemove = null, onSelect
             CraftMander.watchlist.splice(toIdx, 0, dragId);
             saveWatchlist();
 
-            // Re-render in place (preserves craftableMap, callbacks)
             renderWatchlist(ulElement, craftableMap, onRemove, onSelect, itemActions, onReorder);
             if (onReorder) onReorder();
         });

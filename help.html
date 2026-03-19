@@ -298,6 +298,21 @@
             border: 1px solid rgba(94,129,172,0.35);
         }
 
+        /* Inline light mockups */
+        .mock-light {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 3px;
+            flex-shrink: 0;
+        }
+        .mock-light.green  { background: #a3be8c; box-shadow: 0 0 5px rgba(163,190,140,0.55); }
+        .mock-light.gold   { background: #ebcb8b; box-shadow: 0 0 5px rgba(235,203,139,0.5); }
+        .mock-light.dim    { background: #434c5e; border: 1px solid #4c566a; }
+        .mock-light.red    { background: #434c5e; border: 1px solid #4c566a; opacity: 0.6; }
+
         /* Key shortcut pills */
         kbd {
             display: inline-block;
@@ -367,6 +382,7 @@
                 <ul>
                     <li><a href="#overview">What is CraftMander?</a></li>
                     <li><a href="#api-key">Setting up your API key</a></li>
+                    <li><a href="#api-panel">API Connection Panel</a></li>
                 </ul>
             </div>
             <div class="nav-section">
@@ -417,15 +433,14 @@
                 <div class="help-section-header">
                     <span class="help-section-icon">🔑</span>
                     <h2>Setting Up Your API Key</h2>
-                    <span class="page-tag">Dashboard</span>
                 </div>
                 <p>CraftMander needs a GW2 API key to read your material storage. Here's how to create one:</p>
                 <ol class="steps">
                     <li>Go to <strong>account.arena.net/applications</strong> and log in with your GW2 account.</li>
                     <li>Click <strong>New Key</strong> and give it a name (e.g. "CraftMander").</li>
                     <li>Enable the <strong>inventories</strong> and <strong>wallet</strong> permissions.</li>
-                    <li>Copy the generated key and paste it into the API Key field on the Dashboard.</li>
-                    <li>Click <strong>Load Materials</strong>. Your account name and material counts will appear.</li>
+                    <li>Copy the generated key and paste it into the API Connection Panel (the <strong>⚡ API</strong> tab on the right edge of every page).</li>
+                    <li>Click <strong>Save</strong>. Materials will be fetched automatically and the panel will update.</li>
                 </ol>
                 <div class="callout tip">
                     <span class="callout-icon">💡</span>
@@ -435,7 +450,109 @@
                     <span class="callout-icon">ℹ️</span>
                     <span>The <strong>wallet</strong> permission is needed to check craftability of recipes that require wallet currencies (such as Research Notes or Rift Essence) as ingredients. Without it, those recipes will always show as uncraftable.</span>
                 </div>
+            </section>
 
+            <!-- API Panel -->
+            <section class="help-section anchor" id="api-panel">
+                <div class="help-section-header">
+                    <span class="help-section-icon">⚡</span>
+                    <h2>API Connection Panel</h2>
+                    <span class="page-tag">All pages</span>
+                </div>
+                <p>
+                    The API Connection Panel is a floating panel anchored to the right edge of every page. It's
+                    the single place to manage your GW2 API key and check connection status — no matter which
+                    page you're on.
+                </p>
+                <p>
+                    The panel appears as a small <strong>⚡ API</strong> tab. Click it to expand; click again
+                    or press the <strong>✕</strong> button to collapse. If no API key is stored when you first
+                    visit, the panel opens automatically to invite you to enter one.
+                </p>
+
+                <div class="help-sub">
+                    <h3>Panel contents</h3>
+                    <table class="feature-table">
+                        <thead>
+                            <tr>
+                                <th>Element</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Key status dot + label</td>
+                                <td>Shows whether a key is currently stored. <span class="mock-light green"></span> green = key present; <span class="mock-light red"></span> dimmed = no key. Read-only — use the pencil button to change it.</td>
+                            </tr>
+                            <tr>
+                                <td>✏ Pencil button</td>
+                                <td>Opens a password field for entering or replacing your API key. Press <kbd>Enter</kbd> or click <strong>Save</strong> to store the key and trigger an immediate fetch. Press <kbd>Esc</kbd> to dismiss without saving.</td>
+                            </tr>
+                            <tr>
+                                <td>Account name</td>
+                                <td>Displayed after a successful fetch. Shows your GW2 account name (e.g. Username.1234). Hidden when no key has been successfully used.</td>
+                            </tr>
+                            <tr>
+                                <td>State lights</td>
+                                <td>Four indicator lights described in detail below.</td>
+                            </tr>
+                            <tr>
+                                <td>↻ Refresh Materials</td>
+                                <td>Manually re-fetches materials and wallet data using the stored key. Useful after crafting in-game or after changing your watchlist. Spins while fetching.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="help-sub">
+                    <h3>State lights</h3>
+                    <p>Four small indicator dots show the health of your connection at a glance.</p>
+                    <table class="feature-table">
+                        <thead>
+                            <tr>
+                                <th>Light</th>
+                                <th>What it means</th>
+                                <th>How it's determined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Inventories permission</td>
+                                <td><span class="mock-light green"></span> green = materials returned data; <span class="mock-light gold"></span> amber = fetch succeeded but returned empty (permission likely missing)</td>
+                                <td>Inferred from whether the materials fetch returned a non-empty result. No separate permissions check is made.</td>
+                            </tr>
+                            <tr>
+                                <td>Wallet permission</td>
+                                <td>Same logic as Inventories, applied to the wallet endpoint</td>
+                                <td>Inferred from whether the wallet fetch returned a non-empty result. An empty wallet on a real account likely means the wallet permission wasn't granted.</td>
+                            </tr>
+                            <tr>
+                                <td>Materials fetched</td>
+                                <td><span class="mock-light green"></span> green = data loaded, timestamp shown; <span class="mock-light gold"></span> amber (dimmed) = data loaded but watchlist has changed since the last fetch</td>
+                                <td>Set green on every successful fetch. Dims to amber if you add or remove items from your watchlist after the last fetch — a visual hint that the craftability data may not reflect your current list.</td>
+                            </tr>
+                            <tr>
+                                <td>Prices fetched</td>
+                                <td><span class="mock-light dim"></span> inactive — not yet implemented</td>
+                                <td>Stubbed for a future Trading Post price feature. Does nothing currently.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="help-sub">
+                    <h3>Stale data indicator</h3>
+                    <p>
+                        The <strong>Materials fetched</strong> light dims to amber when your watchlist changes
+                        after the last fetch. This is a visual hint only — nothing is invalidated or
+                        re-fetched automatically. Your craftability results are still based on the last loaded
+                        materials. Click <strong>↻ Refresh Materials</strong> to get fresh data.
+                    </p>
+                    <div class="callout tip">
+                        <span class="callout-icon">💡</span>
+                        <span>A key entered in the panel applies immediately and site-wide. You never need to enter it twice — navigate to any page and the same key and connection state will be present.</span>
+                    </div>
+                </div>
             </section>
 
             <!-- Explorer -->
@@ -471,7 +588,7 @@
                         </tr>
                         <tr>
                             <td>Watchlist panel</td>
-                            <td>Shows all watched recipes. Click ✖ to remove an item. No craftability info is shown here — load materials on the Dashboard for that.</td>
+                            <td>Shows all watched recipes. Click ✖ to remove an item. No craftability info is shown here — load materials via the API Connection Panel for that.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -485,8 +602,8 @@
                     <span class="page-tag">Dashboard page</span>
                 </div>
                 <p>
-                    The Dashboard is the main view for seeing what you can craft. After loading your materials,
-                    each watchlist item shows a live craftability badge.
+                    The Dashboard is the main view for seeing what you can craft. After loading your materials
+                    via the API Connection Panel, each watchlist item shows a live craftability badge.
                 </p>
                 <table class="feature-table">
                     <thead>
@@ -506,7 +623,7 @@
                         </tr>
                         <tr>
                             <td><em>(no badge)</em></td>
-                            <td>Materials haven't been loaded yet — enter your API key and click Load Materials.</td>
+                            <td>Materials haven't been loaded yet — use the ⚡ API panel to enter your key and fetch materials.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -712,6 +829,7 @@
 </div>
 
 <script src="config.js"></script>
+<script src="api-panel.js"></script>
 <script>
     // Highlight active sidebar link on scroll
     const sections = document.querySelectorAll(".anchor");

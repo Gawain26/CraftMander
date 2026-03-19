@@ -1,5 +1,4 @@
 // crafting.js — craftability checks
-// craft.js is deleted; this is the single source of truth.
 
 /**
  * Check whether itemId can be obtained — either from inventory or by crafting.
@@ -36,9 +35,6 @@ function canCraftItem(itemId, inv, wallet, memo = {}) {
 
         for (const ing of recipe.ingredients) {
             if ("currency_id" in ing) {
-                // Currency ingredient — check wallet balance directly.
-                // Currency is consumed in bulk (not one-at-a-time like items),
-                // so we deduct the full count in one go.
                 const have = wallet[ing.currency_id] || 0;
                 if (have < ing.count) {
                     ok = false;
@@ -46,7 +42,6 @@ function canCraftItem(itemId, inv, wallet, memo = {}) {
                 }
                 wallet[ing.currency_id] = have - ing.count;
             } else {
-                // Standard item ingredient — recurse as before.
                 for (let i = 0; i < ing.count; i++) {
                     if (!canCraftItem(ing.item_id, inv, wallet, memo)) {
                         ok = false;
@@ -58,7 +53,6 @@ function canCraftItem(itemId, inv, wallet, memo = {}) {
         }
 
         if (ok) {
-            // inv and wallet were mutated in-place as ingredients were consumed — done.
             return true;
         }
 
@@ -77,9 +71,24 @@ function canCraftItem(itemId, inv, wallet, memo = {}) {
 }
 
 /**
- * For every recipe on the watchlist, determine craftability against current materials.
- * Each item is checked independently against a fresh inventory + wallet snapshot.
- * Returns a map of { [output_item_id]: boolean }
+ * Count how many times itemId can be crafted back-to-back from a fresh
+ * copy of materials/wallet, consuming ingredients each time.
+ * Returns 0 if not craftable at all.
+ */
+function countCraftable(itemId) {
+    const inv    = { ...CraftMander.materials };
+    const wallet = { ...CraftMander.wallet };
+    let count = 0;
+    while (canCraftItem(itemId, inv, wallet, {})) {
+        count++;
+    }
+    return count;
+}
+
+/**
+ * For every recipe on the watchlist, count how many times it can be crafted
+ * against a fresh inventory + wallet snapshot (independent per item).
+ * Returns a map of { [output_item_id]: number }  (0 = not craftable)
  */
 function computeCraftables() {
     const results = {};
@@ -88,13 +97,7 @@ function computeCraftables() {
         const recipe = CraftMander.recipes.find(r => r.id === recipeId);
         if (!recipe) continue;
 
-        const itemId = recipe.output_item_id;
-        results[itemId] = canCraftItem(
-            itemId,
-            { ...CraftMander.materials },
-            { ...CraftMander.wallet },
-            {}
-        );
+        results[recipe.output_item_id] = countCraftable(recipe.output_item_id);
     }
 
     return results;
@@ -115,7 +118,6 @@ function computeSerialCraftables(watchlist = CraftMander.watchlist) {
         if (!recipe) continue;
 
         const itemId = recipe.output_item_id;
-        // inv and wallet are mutated in place — successful crafts consume their ingredients
         if (canCraftItem(itemId, inv, wallet, {})) {
             itemIds.push(itemId);
         }

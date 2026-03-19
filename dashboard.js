@@ -7,26 +7,29 @@ let serialExcluded = new Set(); // recipe IDs opted out of serial run
 window.addEventListener("DOMContentLoaded", async () => {
     await loadGameData();
 
-    const watchUl    = document.getElementById("craftableWatchlist");
-    const keyInput   = document.getElementById("apiKeyInput");
-    const loadBtn    = document.getElementById("loadMaterialsBtn");
-    const statusEl   = document.getElementById("apiStatus");
-    const serialBtn  = document.getElementById("serialModeToggle");
-    const clearBtn   = document.getElementById("clearWatchlistBtn");
+    const watchUl   = document.getElementById("craftableWatchlist");
+    const serialBtn = document.getElementById("serialModeToggle");
+    const clearBtn  = document.getElementById("clearWatchlistBtn");
 
-    if (!watchUl || !keyInput || !loadBtn || !statusEl || !serialBtn || !clearBtn) {
+    if (!watchUl || !serialBtn || !clearBtn) {
         console.error("Dashboard: missing DOM elements");
         return;
     }
 
-    const savedKey = localStorage.getItem("CraftManderAPIKey");
-    if (savedKey) keyInput.value = savedKey;
-
     renderDashboardWatchlist(watchUl);
 
-    // Auto-load if we have a saved key
-    if (savedKey) {
-        await doLoad(savedKey, watchUl, loadBtn, statusEl);
+    // ── React to materials loaded (by api-panel.js, on any page) ───────────
+    document.addEventListener("craftmander:materials-loaded", () => {
+        currentCraftableMap = computeCraftables();
+        renderDashboardWatchlist(watchUl);
+        renderSerialSummary();
+    });
+
+    // ── If materials are already loaded (api-panel auto-fetched before us) ──
+    if (Object.keys(CraftMander.materials).length > 0) {
+        currentCraftableMap = computeCraftables();
+        renderDashboardWatchlist(watchUl);
+        renderSerialSummary();
     }
 
     // Serial mode toggle
@@ -54,15 +57,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    loadBtn.addEventListener("click", async () => {
-        const key = keyInput.value.trim();
-        if (!key) {
-            setStatus(statusEl, "error", "Please enter an API key.");
-            return;
-        }
-        await doLoad(key, watchUl, loadBtn, statusEl);
-    });
-
     window.addEventListener("storage", (e) => {
         if (e.key === "CraftManderWatchlist") {
             CraftMander.watchlist = e.newValue ? JSON.parse(e.newValue) : [];
@@ -73,40 +67,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
     });
 });
-
-function setStatus(el, type, message) {
-    el.textContent = message;
-    el.className = "api-status " + type;
-}
-
-async function doLoad(key, watchUl, loadBtn, statusEl) {
-    setStatus(statusEl, "loading", "Fetching materials from GW2…");
-    loadBtn.disabled = true;
-
-    try {
-        const [_, accountName] = await Promise.all([
-            loadMaterials(key),
-            loadAccountName(key),
-        ]);
-
-        setStatus(statusEl, "success", `Materials loaded — ${Object.keys(CraftMander.materials).length} stacks.`);
-
-        const nameEl = document.getElementById("accountName");
-        if (nameEl) {
-            nameEl.textContent = accountName || "";
-            nameEl.title = accountName ? `Logged in as ${accountName}` : "";
-        }
-
-        currentCraftableMap = computeCraftables();
-        renderDashboardWatchlist(watchUl);
-        renderSerialSummary();
-    } catch (err) {
-        console.error(err);
-        setStatus(statusEl, "error", `Error: ${err.message}`);
-    } finally {
-        loadBtn.disabled = false;
-    }
-}
 
 /**
  * Wrapper around renderWatchlist that injects serial mode item toggles
@@ -128,7 +88,6 @@ function renderDashboardWatchlist(watchUl) {
         const recipe = CraftMander.recipes.find(r => r.id === recipeId);
         const itemId = recipe?.output_item_id;
 
-        // null = excluded (don't show status), true/false = in serial run result
         const madeTheCut = isExcluded ? null : serialItemIds.has(itemId);
 
         if (isExcluded) {
@@ -159,7 +118,6 @@ function renderDashboardWatchlist(watchUl) {
             renderSerialSummary();
         });
 
-        // Insert before the remove button: name | badges | serial-toggle | remove
         li.insertBefore(toggleBtn, li.lastChild);
     } : null;
 
@@ -180,7 +138,6 @@ function renderSerialSummary() {
         return;
     }
 
-    // Only pass recipe IDs that haven't been excluded
     const activeWatchlist = CraftMander.watchlist.filter(id => !serialExcluded.has(id));
     const { count, itemIds } = computeSerialCraftables(activeWatchlist);
     const total = activeWatchlist.length;
@@ -299,7 +256,6 @@ function buildTreeNode(recipe, depth) {
         li.appendChild(nameSpan);
         li.appendChild(countSpan);
 
-        // Currency ingredients can't be sub-crafted — no toggle
         const subRecipes = !isCurrency && CraftMander.recipeLookup[ing.item_id];
         if (subRecipes && subRecipes.length > 0 && depth < 4) {
             const toggle = document.createElement("button");

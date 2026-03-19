@@ -13,38 +13,15 @@
     <a href="index.html">Explorer</a>
     <a href="dashboard.html" class="active">Dashboard</a>
     <a href="libraries.html">Libraries</a>
-	<a href="help.html">Help</a>
+    <a href="help.html">Help</a>
 </nav>
 
 <div class="page">
     <h1>Craftability Dashboard</h1>
     <p class="page-subtitle">Load your GW2 account materials to see what you can craft right now.</p>
 
-    <!-- Top row: 2 columns -->
-    <div class="layout layout-2col" style="margin-bottom: 20px;">
-
-        <div class="panel">
-            <div class="panel-header">
-                <h2>GW2 API Key</h2>
-            </div>
-            <p style="font-size:0.85rem; color:var(--muted); margin-bottom:12px;">
-                Generate a key at
-                <a href="https://account.arena.net/applications" target="_blank"
-                   style="color:var(--accent);">account.arena.net</a>
-                with the <strong>inventories</strong> permission.
-            </p>
-            <input
-                type="password"
-                id="apiKeyInput"
-                placeholder="Paste your API key…"
-                autocomplete="off"
-            >
-            <div class="load-row">
-                <button id="loadMaterialsBtn" class="primary">Load Materials</button>
-                <span id="accountName" class="account-name"></span>
-            </div>
-            <div id="apiStatus" class="api-status"></div>
-        </div>
+    <!-- Top row: watchlist only (API key panel is now site-wide) -->
+    <div class="layout" style="margin-bottom: 20px;">
 
         <div class="panel">
             <div class="panel-header">
@@ -86,5 +63,6 @@
 <script src="crafting.js"></script>
 <script src="watchlist.js"></script>
 <script src="dashboard.js"></script>
+<script src="api-panel.js"></script>
 </body>
 </html>
