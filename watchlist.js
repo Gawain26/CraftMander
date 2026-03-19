@@ -115,14 +115,20 @@ function renderWatchlist(ulElement, craftableMap = {}, onRemove = null, onSelect
         if (rarity) nameSpan.classList.add("rarity-" + rarity.toLowerCase());
 
         if (craftable !== undefined) {
-            const badge = document.createElement("span");
-            badge.className = craftable ? "badge craftable" : "badge not-craftable";
-            badge.textContent = craftable ? "✓ Ready" : "✗ Missing";
-            li.appendChild(nameSpan);
-            li.appendChild(badge);
-        } else {
-            li.appendChild(nameSpan);
-        }
+			const badge = document.createElement("span");
+			if (craftable > 0) {
+				badge.className = "badge craftable";
+				badge.textContent = craftable > 1 ? `✓ ×${craftable}` : "✓ Ready";
+				badge.title = `Can craft ${craftable} time${craftable !== 1 ? "s" : ""}`;
+			} else {
+				badge.className = "badge not-craftable";
+				badge.textContent = "✗ Missing";
+			}
+			li.appendChild(nameSpan);
+			li.appendChild(badge);
+		} else {
+			li.appendChild(nameSpan);
+		}
 
         // ── Remove button ─────────────────────────────────────────────────────
         const removeBtn = document.createElement("button");
