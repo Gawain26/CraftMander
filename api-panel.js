@@ -67,15 +67,18 @@
                 </span>
             </div>
             <div class="api-light-row" id="lightPrices">
-                <span class="api-light" data-state="off"></span>
-                <span class="api-light-label api-light-label--dim">Prices fetched <span class="api-badge-soon">soon</span></span>
+                <span class="api-light" data-state="unknown"></span>
+                <span class="api-light-label">
+                    Prices fetched
+                    <span class="api-light-ts" id="lightPricesTs"></span>
+                </span>
             </div>
         </div>
 
         <!-- Refresh button -->
         <button class="api-refresh-btn" id="apiRefreshBtn" disabled>
             <span class="api-refresh-icon" id="apiRefreshIcon">↻</span>
-            Refresh Materials
+            Refresh Materials &amp; Prices
         </button>
 
         <div class="api-panel-status" id="apiPanelStatus"></div>
@@ -113,24 +116,63 @@
     }
 
     // ── Watchlist snapshot for stale detection ──────────────────────────────
-    let watchlistSnapshot = null;
+    // Stored as a Set of recipe IDs so reordering never triggers stale.
+    let watchlistSnapshotSet = null;
 
     function snapshotWatchlist() {
-        watchlistSnapshot = JSON.stringify(window.CraftMander?.watchlist ?? []);
+        watchlistSnapshotSet = new Set(window.CraftMander?.watchlist ?? []);
     }
 
-    function isWatchlistStale() {
-        if (watchlistSnapshot === null) return false;
-        return watchlistSnapshot !== JSON.stringify(window.CraftMander?.watchlist ?? []);
+    function currentWatchlistSet() {
+        return new Set(window.CraftMander?.watchlist ?? []);
     }
 
     function updateMaterialsLight() {
-        const stale = isWatchlistStale();
-        const row = $("lightMaterials");
-        if (!row) return;
-        const cur = row.querySelector(".api-light").dataset.state;
-        if (cur === "on" || cur === "stale") {
-            setLight("lightMaterials", stale ? "stale" : "on");
+        if (watchlistSnapshotSet === null) return;
+
+        const current  = currentWatchlistSet();
+        const addedIds = [...current].filter(id => !watchlistSnapshotSet.has(id));
+        const anyAdded = addedIds.length > 0;
+
+        const matRow = $("lightMaterials");
+        if (matRow) {
+            const cur = matRow.querySelector(".api-light").dataset.state;
+            if (cur === "on" || cur === "stale") {
+                setLight("lightMaterials", anyAdded ? "stale" : "on");
+            }
+        }
+
+        const pricesRow = $("lightPrices");
+        if (pricesRow) {
+            const pricesCur = pricesRow.querySelector(".api-light").dataset.state;
+            if (pricesCur === "on" || pricesCur === "stale") {
+                let pricesStale    = false;
+                let cachedItemIdSet = null;
+
+                try {
+                    const raw = sessionStorage.getItem("CraftManderPriceIDs");
+                    if (raw) cachedItemIdSet = new Set(raw.split(",").map(Number));
+                } catch {}
+
+                if (!cachedItemIdSet) {
+                    cachedItemIdSet = new Set(
+                        Object.keys(window.CraftMander?.prices ?? {}).map(Number)
+                    );
+                }
+
+                if (anyAdded) {
+                    const recipes = window.CraftMander?.recipes ?? [];
+                    for (const recipeId of addedIds) {
+                        const recipe = recipes.find(r => r.id === recipeId);
+                        if (recipe && !cachedItemIdSet.has(recipe.output_item_id)) {
+                            pricesStale = true;
+                            break;
+                        }
+                    }
+                }
+
+                setLight("lightPrices", pricesStale ? "stale" : "on");
+            }
         }
     }
 
@@ -143,6 +185,7 @@
         panel.classList.remove("collapsed");
         body.hidden = false;
         tab.setAttribute("aria-expanded", "true");
+        try { sessionStorage.setItem("CraftManderPanelOpen", "1"); } catch {}
     }
 
     function closePanel() {
@@ -153,6 +196,7 @@
         panel.classList.add("collapsed");
         body.hidden = true;
         tab.setAttribute("aria-expanded", "false");
+        try { sessionStorage.removeItem("CraftManderPanelOpen"); } catch {}
     }
 
     // ── Key input ────────────────────────────────────────────────────────────
@@ -182,9 +226,9 @@
         if (tabDot) tabDot.dataset.state = hasKey ? "on" : "off";
     }
 
-    // ── Load materials ──────────────────────────────────────────────────────
+    // ── Load materials then prices ──────────────────────────────────────────
     // force=false  → use sessionStorage cache if available (page navigation)
-    // force=true   → always hit the proxy (explicit Refresh button or new key)
+    // force=true   → always hit the network (explicit Refresh or new key)
     async function doFetch(key, force = false) {
         const refreshBtn  = $("apiRefreshBtn");
         const refreshIcon = $("apiRefreshIcon");
@@ -192,43 +236,44 @@
         if (refreshBtn) refreshBtn.disabled = true;
         if (refreshIcon) refreshIcon.classList.add("spinning");
 
-        // Only show "Fetching…" when we're actually going to the network.
-        // For a cache restore we'll update silently and fast.
-        const willFetch = force || !hasCacheForKey(key);
-        if (willFetch) setStatus("Fetching from GW2…", "loading");
+        const willFetchMaterials = force || !hasMaterialCacheForKey(key);
+        const willFetchPrices    = force || !hasPriceCache();
+
+        if (willFetchMaterials) setStatus("Fetching materials from GW2…", "loading");
 
         try {
-            // loadMaterials returns { accountName, fetchedAt } on a cache hit,
-            // or null on a network fetch (account name fetched separately below).
+            // ── Materials ───────────────────────────────────────────────────
             const cached = await window.loadMaterials(key, { force });
 
-            let accountName, fetchedAt;
+            let accountName, materialsFetchedAt;
 
             if (cached !== null) {
-                // Cache hit — no network request was made
-                accountName = cached.accountName;
-                fetchedAt   = cached.fetchedAt;
+                accountName        = cached.accountName;
+                materialsFetchedAt = cached.fetchedAt;
             } else {
-                // Network fetch — also get account name and persist to cache
-                accountName = await window.loadAccountName(key);
-                fetchedAt   = new Date();
+                accountName        = await window.loadAccountName(key);
+                materialsFetchedAt = new Date();
                 window.saveMaterialCache(key, accountName || "");
             }
 
-            // Infer permissions from non-empty results
             const matCount = Object.keys(window.CraftMander?.materials ?? {}).length;
-            const walCount = Object.keys(window.CraftMander?.wallet ?? {}).length;
+            const walCount = Object.keys(window.CraftMander?.wallet   ?? {}).length;
 
             setLight("lightInventories", matCount > 0 ? "on" : "warn");
             setLight("lightWallet",      walCount > 0 ? "on" : "warn");
             setLight("lightMaterials",   "on");
 
-            // Show the original fetch time, not the current time — so navigating
-            // between pages doesn't make the timestamp jump to "now".
-            const tsEl = $("lightMaterialsTs");
-            if (tsEl) tsEl.textContent = formatTime(fetchedAt);
+            const mtsEl = $("lightMaterialsTs");
+            if (mtsEl) {
+                try {
+                    const raw = sessionStorage.getItem("CraftManderFetchedAt");
+                    mtsEl.textContent = raw ? formatTime(new Date(raw)) : "";
+                } catch {
+                    mtsEl.textContent = "";
+                }
+            }
 
-            // Account name
+            // Account name row
             const nameEl  = $("apiAccountName");
             const nameRow = $("apiAccountRow");
             if (nameEl && nameRow) {
@@ -240,20 +285,66 @@
                 }
             }
 
-            // Snapshot watchlist now that we have fresh data
-            snapshotWatchlist();
-
-            if (willFetch) {
-                setStatus(`${matCount} material stacks loaded.`, "success");
-                setTimeout(() => setStatus("", ""), 3500);
-            }
-
             setKeyDisplay(true);
 
-            // Notify dashboard.js if it exists on this page
+            // Snapshot before dispatching materials-loaded — same rationale as
+            // the prices-loaded snapshot below: any synchronous listener that
+            // calls updateMaterialsLight must see a current snapshot.
+            snapshotWatchlist();
+
+            // Notify dashboard.js (and any other listener) that materials are ready
             document.dispatchEvent(new CustomEvent("craftmander:materials-loaded", {
                 detail: { accountName }
             }));
+
+            // ── Prices ──────────────────────────────────────────────────────
+            // Fetch prices for watchlist output items — no API key needed.
+            // Skip if watchlist is empty (loadPrices handles that gracefully).
+            if (willFetchMaterials) setStatus("Fetching TP prices…", "loading");
+
+            try {
+                const priceResult = await window.loadPrices({ force });
+                const priceCount  = Object.keys(window.CraftMander?.prices ?? {}).length;
+
+// Only set the light if we actually have prices — if the watchlist is
+                // empty or all items lack TP listings, leave it at "unknown" rather
+                // than going amber, which would imply a problem that doesn't exist.
+                if (priceCount > 0) setLight("lightPrices", "on");
+
+                const ptsEl = $("lightPricesTs");
+                if (ptsEl) {
+                    try {
+                        const raw = sessionStorage.getItem("CraftManderPriceFetchedAt");
+                        ptsEl.textContent = raw ? formatTime(new Date(raw)) : "";
+                    } catch {
+                        ptsEl.textContent = "";
+                    }
+                }
+
+                // Snapshot before dispatching — ensures updateMaterialsLight
+                // sees a current snapshot if anything in the event handler
+                // triggers it before we get to the end of doFetch.
+                snapshotWatchlist();
+
+                // Notify revenue.js (and any other listener) that prices are ready
+                document.dispatchEvent(new CustomEvent("craftmander:prices-loaded", {
+                    detail: { count: priceCount, fromCache: priceResult.fromCache }
+                }));
+            } catch (priceErr) {
+                console.warn("[api-panel] price fetch failed:", priceErr);
+                setLight("lightPrices", "off");
+                // Non-fatal — materials loaded fine; just note the partial failure
+                setStatus("Materials loaded. Price fetch failed: " + priceErr.message, "error");
+                if (refreshBtn) refreshBtn.disabled = false;
+                if (refreshIcon) refreshIcon.classList.remove("spinning");
+                return;
+            }
+
+            if (willFetchMaterials || willFetchPrices) {
+                const matCount2 = Object.keys(window.CraftMander?.materials ?? {}).length;
+                setStatus(`${matCount2} material stacks loaded.`, "success");
+                setTimeout(() => setStatus("", ""), 3500);
+            }
 
         } catch (err) {
             console.error("[api-panel] fetch error:", err);
@@ -267,11 +358,19 @@
         }
     }
 
-    // Quick check: does sessionStorage already hold a cache for this key?
-    function hasCacheForKey(key) {
+    // Quick checks: does sessionStorage already hold a valid cache?
+    function hasMaterialCacheForKey(key) {
         try {
             return sessionStorage.getItem("CraftManderCachedKey") === key &&
                    sessionStorage.getItem("CraftManderMaterials") !== null;
+        } catch {
+            return false;
+        }
+    }
+
+    function hasPriceCache() {
+        try {
+            return sessionStorage.getItem("CraftManderPrices") !== null;
         } catch {
             return false;
         }
@@ -282,30 +381,47 @@
         const storedKey = localStorage.getItem("CraftManderAPIKey");
         setKeyDisplay(!!storedKey);
 
+        // Snapshot the watchlist immediately — before any await — so that
+        // storage events fired during page load don't see a null snapshot
+        // and incorrectly leave lights in their default unknown/stale state.
+        snapshotWatchlist();
+
+        // Restore open/close state across page navigations (tab-scoped).
+        // This runs before the early return so a no-key user who opened the
+        // panel on one page still sees it open when they navigate elsewhere.
+        try {
+            if (sessionStorage.getItem("CraftManderPanelOpen") === "1") openPanel();
+        } catch {}
+
         if (!storedKey) {
-            // Gently invite the user to enter a key
-            openPanel();
+            openPanel(); // always open to invite key entry
             return;
         }
 
         await waitForGameData();
-        // force=false — will use cache if available, avoiding a proxy hit on
-        // every page navigation within the same tab.
         await doFetch(storedKey, false);
     }
 
-    // data.js exposes loadMaterials globally; game data is loaded by loadGameData() in each page.
     function waitForGameData(maxMs = 8000) {
+        // Wait for both loadMaterials to exist (data.js parsed) AND for
+        // CraftMander.recipes to be populated (loadGameData() completed).
+        // The original check only covered the former, so loadPrices would be
+        // called before recipes were loaded, producing an empty itemIds array
+        // and a cache miss even when sessionStorage held valid data.
+        function ready() {
+            return typeof window.loadMaterials === "function" &&
+                   (window.CraftMander?.recipes?.length ?? 0) > 0;
+        }
         return new Promise((resolve, reject) => {
-            if (typeof window.loadMaterials === "function") { resolve(); return; }
+            if (ready()) { resolve(); return; }
             const t0 = Date.now();
             const iv = setInterval(() => {
-                if (typeof window.loadMaterials === "function") {
+                if (ready()) {
                     clearInterval(iv);
                     resolve();
                 } else if (Date.now() - t0 > maxMs) {
                     clearInterval(iv);
-                    reject(new Error("loadMaterials not available"));
+                    reject(new Error("Game data not available within timeout"));
                 }
             }, 50);
         });
@@ -313,7 +429,6 @@
 
     // ── Event binding ────────────────────────────────────────────────────────
     function bindEvents() {
-        // Tab toggle
         $("apiPanelTab")?.addEventListener("click", () => {
             const panel = $("apiPanel");
             if (panel.classList.contains("collapsed")) openPanel();
@@ -322,14 +437,12 @@
 
         $("apiPanelClose")?.addEventListener("click", closePanel);
 
-        // Pencil — show/hide input
         $("apiKeyEditBtn")?.addEventListener("click", () => {
             const row = $("apiKeyInputRow");
             if (row.classList.contains("hidden")) showKeyInput();
             else hideKeyInput();
         });
 
-        // Save key — always force a fresh fetch so the new key is validated
         async function saveKey() {
             const input = $("apiKeyInputPanel");
             const key = input?.value.trim();
@@ -338,7 +451,7 @@
             setKeyDisplay(true);
             hideKeyInput();
             await waitForGameData();
-            await doFetch(key, true); // force=true: new key, must hit the network
+            await doFetch(key, true);
         }
 
         $("apiKeySaveBtn")?.addEventListener("click", saveKey);
@@ -347,14 +460,12 @@
             if (e.key === "Escape") hideKeyInput();
         });
 
-        // Refresh button — always force a network fetch
         $("apiRefreshBtn")?.addEventListener("click", async () => {
             const key = localStorage.getItem("CraftManderAPIKey");
             if (!key) { openPanel(); showKeyInput(); return; }
-            await doFetch(key, true); // force=true: explicit user refresh
+            await doFetch(key, true);
         });
 
-        // Watch for watchlist changes from any page (localStorage events or direct mutations)
         window.addEventListener("storage", (e) => {
             if (e.key === "CraftManderWatchlist") updateMaterialsLight();
         });
@@ -369,15 +480,31 @@
         injectPanel();
     }
 
-    // Expose refresh for other scripts to call after a manual materials load
     window.__apiPanelRefreshUI = function () {
-        const matCount = Object.keys(window.CraftMander?.materials ?? {}).length;
-        const walCount = Object.keys(window.CraftMander?.wallet ?? {}).length;
-        setLight("lightInventories", matCount > 0 ? "on" : "warn");
-        setLight("lightWallet",      walCount > 0 ? "on" : "warn");
+        const matCount   = Object.keys(window.CraftMander?.materials ?? {}).length;
+        const walCount   = Object.keys(window.CraftMander?.wallet    ?? {}).length;
+        const priceCount = Object.keys(window.CraftMander?.prices    ?? {}).length;
+        setLight("lightInventories", matCount   > 0 ? "on" : "warn");
+        setLight("lightWallet",      walCount   > 0 ? "on" : "warn");
         setLight("lightMaterials",   "on");
-        const tsEl = $("lightMaterialsTs");
-        if (tsEl) tsEl.textContent = formatTime(new Date());
+        if (priceCount > 0) setLight("lightPrices", "on");
+
+        // Read the timestamps that were stored at fetch time rather than
+        // using the current clock — avoids the indicator showing "live time"
+        // when called from revenue.js after a manual price refresh.
+        const mtsEl = $("lightMaterialsTs");
+        const ptsEl = $("lightPricesTs");
+        try {
+            const rawMat   = sessionStorage.getItem("CraftManderFetchedAt");
+            const rawPrice = sessionStorage.getItem("CraftManderPriceFetchedAt");
+            if (mtsEl) mtsEl.textContent = rawMat   ? formatTime(new Date(rawMat))   : "";
+            if (ptsEl) ptsEl.textContent = rawPrice ? formatTime(new Date(rawPrice)) : "";
+        } catch {
+            // sessionStorage unavailable — leave timestamps blank
+            if (mtsEl) mtsEl.textContent = "";
+            if (ptsEl) ptsEl.textContent = "";
+        }
+
         snapshotWatchlist();
         setKeyDisplay(!!localStorage.getItem("CraftManderAPIKey"));
     };

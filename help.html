@@ -311,7 +311,7 @@
         .mock-light.green  { background: #a3be8c; box-shadow: 0 0 5px rgba(163,190,140,0.55); }
         .mock-light.gold   { background: #ebcb8b; box-shadow: 0 0 5px rgba(235,203,139,0.5); }
         .mock-light.dim    { background: #434c5e; border: 1px solid #4c566a; }
-        .mock-light.red    { background: #434c5e; border: 1px solid #4c566a; opacity: 0.6; }
+        .mock-light.red    { background: #bf616a; }
 
         /* Key shortcut pills */
         kbd {
@@ -366,6 +366,7 @@
     <a href="index.html">Explorer</a>
     <a href="dashboard.html">Dashboard</a>
     <a href="libraries.html">Libraries</a>
+    <a href="revenue.html">Revenue</a>
     <a href="help.html" class="active">Help</a>
 </nav>
 
@@ -390,6 +391,7 @@
                 <ul>
                     <li><a href="#explorer">Recipe Explorer</a></li>
                     <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#revenue">Revenue</a></li>
                     <li><a href="#libraries">Libraries</a></li>
                 </ul>
             </div>
@@ -420,7 +422,8 @@
                 <p>
                     You build a personal <strong>watchlist</strong> of recipes you care about — either by
                     searching manually or loading a curated <strong>Library</strong> — then check the
-                    <strong>Dashboard</strong> to see your craftability status at a glance.
+                    <strong>Dashboard</strong> to see your craftability status at a glance, or head to the
+                    <strong>Revenue</strong> page to rank items by their Trading Post value.
                 </p>
                 <div class="callout info">
                     <span class="callout-icon">ℹ️</span>
@@ -440,7 +443,7 @@
                     <li>Click <strong>New Key</strong> and give it a name (e.g. "CraftMander").</li>
                     <li>Enable the <strong>inventories</strong> and <strong>wallet</strong> permissions.</li>
                     <li>Copy the generated key and paste it into the API Connection Panel (the <strong>⚡ API</strong> tab on the right edge of every page).</li>
-                    <li>Click <strong>Save</strong>. Materials will be fetched automatically and the panel will update.</li>
+                    <li>Click <strong>Save</strong>. Materials and Trading Post prices will be fetched automatically and the panel will update.</li>
                 </ol>
                 <div class="callout tip">
                     <span class="callout-icon">💡</span>
@@ -466,7 +469,8 @@
                 </p>
                 <p>
                     The panel appears as a small <strong>⚡ API</strong> tab. Click it to expand; click again
-                    or press the <strong>✕</strong> button to collapse. If no API key is stored when you first
+                    or press the <strong>✕</strong> button to collapse. The panel remembers its open or closed
+                    state as you navigate between pages. If no API key is stored when you first
                     visit, the panel opens automatically to invite you to enter one.
                 </p>
 
@@ -482,11 +486,11 @@
                         <tbody>
                             <tr>
                                 <td>Key status dot + label</td>
-                                <td>Shows whether a key is currently stored. <span class="mock-light green"></span> green = key present; <span class="mock-light red"></span> dimmed = no key. Read-only — use the pencil button to change it.</td>
+                                <td>Shows whether a key is currently stored. <span class="mock-light green"></span> green = key present; <span class="mock-light dim"></span> dimmed = no key. Read-only — use the pencil button to change it.</td>
                             </tr>
                             <tr>
                                 <td>✏ Pencil button</td>
-                                <td>Opens a password field for entering or replacing your API key. Press <kbd>Enter</kbd> or click <strong>Save</strong> to store the key and trigger an immediate fetch. Press <kbd>Esc</kbd> to dismiss without saving.</td>
+                                <td>Opens a text field for entering or replacing your API key. Press <kbd>Enter</kbd> or click <strong>Save</strong> to store the key and trigger an immediate fetch. Press <kbd>Esc</kbd> to dismiss without saving.</td>
                             </tr>
                             <tr>
                                 <td>Account name</td>
@@ -497,8 +501,8 @@
                                 <td>Four indicator lights described in detail below.</td>
                             </tr>
                             <tr>
-                                <td>↻ Refresh Materials</td>
-                                <td>Manually re-fetches materials and wallet data using the stored key. Useful after crafting in-game or after changing your watchlist. Spins while fetching.</td>
+                                <td>↻ Refresh Materials &amp; Prices</td>
+                                <td>Manually re-fetches materials, wallet, and Trading Post prices using the stored key. Useful after crafting in-game or after adding new items to your watchlist. Spins while fetching.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -519,22 +523,22 @@
                             <tr>
                                 <td>Inventories permission</td>
                                 <td><span class="mock-light green"></span> green = materials returned data; <span class="mock-light gold"></span> amber = fetch succeeded but returned empty (permission likely missing)</td>
-                                <td>Inferred from whether the materials fetch returned a non-empty result. No separate permissions check is made.</td>
+                                <td>Inferred from whether the materials fetch returned a non-empty result.</td>
                             </tr>
                             <tr>
                                 <td>Wallet permission</td>
-                                <td>Same logic as Inventories, applied to the wallet endpoint</td>
-                                <td>Inferred from whether the wallet fetch returned a non-empty result. An empty wallet on a real account likely means the wallet permission wasn't granted.</td>
+                                <td>Same logic as Inventories, applied to the wallet endpoint.</td>
+                                <td>Inferred from whether the wallet fetch returned a non-empty result.</td>
                             </tr>
                             <tr>
                                 <td>Materials fetched</td>
-                                <td><span class="mock-light green"></span> green = data loaded, timestamp shown; <span class="mock-light gold"></span> amber (dimmed) = data loaded but watchlist has changed since the last fetch</td>
-                                <td>Set green on every successful fetch. Dims to amber if you add or remove items from your watchlist after the last fetch — a visual hint that the craftability data may not reflect your current list.</td>
+                                <td><span class="mock-light green"></span> green = data loaded, timestamp shown; <span class="mock-light gold"></span> amber = data loaded but items have been <em>added</em> to your watchlist since the last fetch, so new ingredient requirements may not be reflected.</td>
+                                <td>Goes amber only when new items are added to the watchlist — not when items are removed or reordered, since those changes don't require fresh material data.</td>
                             </tr>
                             <tr>
                                 <td>Prices fetched</td>
-                                <td><span class="mock-light dim"></span> inactive — not yet implemented</td>
-                                <td>Stubbed for a future Trading Post price feature. Does nothing currently.</td>
+                                <td><span class="mock-light green"></span> green = TP prices loaded, timestamp shown; <span class="mock-light gold"></span> amber = a newly added watchlist item has no cached price yet.</td>
+                                <td>Goes amber only when an added item's output ID is absent from the price cache. Removing items never invalidates the cache — their prices are retained in case the item is re-added.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -543,14 +547,15 @@
                 <div class="help-sub">
                     <h3>Stale data indicator</h3>
                     <p>
-                        The <strong>Materials fetched</strong> light dims to amber when your watchlist changes
-                        after the last fetch. This is a visual hint only — nothing is invalidated or
-                        re-fetched automatically. Your craftability results are still based on the last loaded
-                        materials. Click <strong>↻ Refresh Materials</strong> to get fresh data.
+                        The Materials and Prices lights dim to amber only when items are <strong>added</strong>
+                        to your watchlist after the last fetch. Removing items or reordering them leaves both
+                        lights green — the existing cached data remains fully valid. Click
+                        <strong>↻ Refresh Materials &amp; Prices</strong> to bring everything up to date after
+                        adding new items.
                     </p>
                     <div class="callout tip">
                         <span class="callout-icon">💡</span>
-                        <span>A key entered in the panel applies immediately and site-wide. You never need to enter it twice — navigate to any page and the same key and connection state will be present.</span>
+                        <span>Trading Post prices are fetched alongside materials automatically on every page load — you don't need to do anything extra to get price data for the Revenue page.</span>
                     </div>
                 </div>
             </section>
@@ -643,6 +648,84 @@
             </section>
 
             <!-- Libraries -->
+            <section class="help-section anchor" id="revenue">
+                <div class="help-section-header">
+                    <span class="help-section-icon">💰</span>
+                    <h2>Revenue</h2>
+                    <span class="page-tag">Revenue page</span>
+                </div>
+                <p>
+                    The Revenue page ranks your craftable watchlist items by their Trading Post value, so you
+                    can see at a glance which crafts are worth the most right now. Prices are fetched live
+                    from the GW2 API alongside your materials — no extra steps required.
+                </p>
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Item</td>
+                            <td>The output item name, colored by rarity.</td>
+                        </tr>
+                        <tr>
+                            <td>GW2E</td>
+                            <td>A ⚙ link that opens the item directly in the GW2Efficiency crafting calculator in a new tab.</td>
+                        </tr>
+                        <tr>
+                            <td>Qty Craftable</td>
+                            <td>How many times you can craft this item from your current materials, calculated independently per item.</td>
+                        </tr>
+                        <tr>
+                            <td>Instant Sell (net)</td>
+                            <td>Revenue if you sell immediately to the highest active buy order. Net of the 15% TP fee (5% listing + 10% sales tax). Multiplied by quantity craftable.</td>
+                        </tr>
+                        <tr>
+                            <td>List &amp; Wait (net)</td>
+                            <td>Revenue if you post at the current lowest sell listing price. Same fee deduction and quantity multiplication. Typically higher than Instant Sell but requires waiting for a buyer.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="help-sub">
+                    <h3>Sorting and refreshing</h3>
+                    <p>
+                        The table defaults to sorting by <strong>List &amp; Wait</strong> revenue descending —
+                        highest potential value first. Click any column header to sort by that column; click
+                        again to reverse the order.
+                    </p>
+                    <p>
+                        Prices are cached for the current browser session and reused as you navigate between
+                        pages. Click <strong>↻ Fetch Prices &amp; Recalculate</strong> to force a fresh fetch
+                        from the GW2 API, or use <strong>↻ Refresh Materials &amp; Prices</strong> in the
+                        ⚡ API panel to refresh everything at once.
+                    </p>
+                </div>
+
+                <div class="help-sub">
+                    <h3>Items showing —</h3>
+                    <p>
+                        A dash in a price column means the item has no active Trading Post listing of that
+                        type — either no buy orders exist (for Instant Sell) or no sell listings exist
+                        (for List &amp; Wait). This is common for rarely traded items. The item is still
+                        shown so you can see its craftable quantity.
+                    </p>
+                </div>
+
+                <div class="callout tip">
+                    <span class="callout-icon">💡</span>
+                    <span>Revenue figures reflect <em>total</em> proceeds across all craftable copies, not per-craft. An item you can craft 10 times at 50s each will show 5g, not 50s.</span>
+                </div>
+                <div class="callout info">
+                    <span class="callout-icon">ℹ️</span>
+                    <span>Revenue calculations don't account for the cost of ingredients — only sale proceeds are shown. Use GW2Efficiency (via the ⚙ link) for a full profit breakdown including material costs.</span>
+                </div>
+            </section>
+
+            <!-- Revenue -->
             <section class="help-section anchor" id="libraries">
                 <div class="help-section-header">
                     <span class="help-section-icon">📚</span>
@@ -672,7 +755,7 @@
                     <h2>Watchlist</h2>
                 </div>
                 <p>
-                    Your watchlist persists across all three pages and is saved automatically to your browser's
+                    Your watchlist persists across all pages and is saved automatically to your browser's
                     local storage. Items remain on the list until you remove them manually.
                 </p>
                 <table class="feature-table">
@@ -697,7 +780,7 @@
                         </tr>
                         <tr>
                             <td>Clear entire watchlist</td>
-                            <td>Click the 🗑 button in any watchlist panel header (Explorer, Dashboard, or Libraries). You'll be asked to confirm before anything is deleted.</td>
+                            <td>Click the 🗑 button in any watchlist panel header. You'll be asked to confirm before anything is deleted.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -803,22 +886,30 @@
                     <span class="help-section-icon">🔗</span>
                     <h2>External Links</h2>
                 </div>
-                <p>Each recipe detail panel provides two quick links:</p>
+                <p>CraftMander links out to two external tools in several places:</p>
                 <table class="feature-table">
                     <thead>
                         <tr>
                             <th>Link</th>
+                            <th>Where it appears</th>
                             <th>What it does</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>📖 GW2 Wiki</td>
+                            <td>Dashboard recipe detail panel</td>
                             <td>Opens the official Guild Wars 2 wiki page for the output item.</td>
                         </tr>
                         <tr>
-                            <td>⚙ GW2Efficiency</td>
-                            <td>Opens the GW2Efficiency crafting calculator pre-loaded with this single item, so you can see a full materials breakdown and where to source missing ingredients.</td>
+                            <td>⚙ GW2Efficiency (single item)</td>
+                            <td>Dashboard detail panel; Revenue table (GW2E column)</td>
+                            <td>Opens the GW2Efficiency crafting calculator pre-loaded with this single item — full materials breakdown, sourcing, and profit calculation.</td>
+                        </tr>
+                        <tr>
+                            <td>⚙ Craft All in GW2Efficiency</td>
+                            <td>Dashboard serial mode summary bar</td>
+                            <td>Opens GW2Efficiency pre-loaded with every item that passed the serial mode check, giving a combined shopping list for the whole batch.</td>
                         </tr>
                     </tbody>
                 </table>

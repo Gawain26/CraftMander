@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftMander — Revenue</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Revenue page extras ─────────────────────────────────────── */
+
+        .rev-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .rev-toolbar button {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rev-fetch-status {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-left: auto;
+        }
+
+        .rev-fetch-status.loading { color: var(--accent); }
+        .rev-fetch-status.error   { color: var(--red); }
+        .rev-fetch-status.success { color: var(--green); }
+
+        /* ── Table wrapper ───────────────────────────────────────────── */
+        .rev-table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden; /* clip the table corners */
+        }
+
+        .rev-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        /* Header */
+        .rev-table thead th {
+            background: var(--surface2);
+            padding: 11px 14px;
+            text-align: left;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .rev-table thead th.sortable {
+            cursor: pointer;
+            transition: color var(--transition), background var(--transition);
+        }
+
+        .rev-table thead th.sortable:hover {
+            color: var(--text);
+            background: var(--surface3);
+        }
+
+        .rev-table thead th.sort-active {
+            color: var(--accent);
+        }
+
+        .sort-arrow {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 0.65rem;
+            opacity: 0.7;
+        }
+
+        /* Body rows */
+        .rev-table tbody tr {
+            border-bottom: 1px solid rgba(76,86,106,0.35);
+            transition: background var(--transition);
+        }
+
+        .rev-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .rev-table tbody tr:hover {
+            background: var(--surface2);
+        }
+
+        .rev-table tbody td {
+            padding: 10px 14px;
+            color: var(--text-dim);
+            vertical-align: middle;
+        }
+
+        /* Item name column */
+        .rev-item-name {
+            font-weight: 500;
+            color: var(--text);
+            max-width: 260px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Qty craftable */
+        .rev-qty {
+            font-variant-numeric: tabular-nums;
+            color: var(--green);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* Coin display */
+        .coin {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .coin-g, .coin-s, .coin-c {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .coin-g { color: var(--gold); }
+        .coin-s { color: #c0c0c0; }
+        .coin-c { color: #cd7f32; }
+
+        .coin-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .coin-icon.g { background: radial-gradient(circle at 35% 35%, #ffd966, #b8860b); }
+        .coin-icon.s { background: radial-gradient(circle at 35% 35%, #e8e8e8, #888); }
+        .coin-icon.c { background: radial-gradient(circle at 35% 35%, #e8a87c, #8b4513); }
+
+        .coin-zero { color: var(--muted); font-style: italic; }
+
+        /* Revenue columns */
+        .rev-col-instant,
+        .rev-col-list {
+            text-align: right;
+        }
+
+        /* GW2E link column — compact, no padding */
+        .rev-th-eff,
+        .rev-col-eff {
+            width: 32px;
+            padding: 0 4px;
+            text-align: center;
+        }
+
+        .rev-eff-link {
+            padding: 4px 7px;
+            font-size: 0.8rem;
+            line-height: 1;
+        }
+
+        /* "no price" placeholder */
+        .rev-no-price {
+            color: var(--muted);
+            font-style: italic;
+            font-size: 0.8rem;
+        }
+
+        /* Empty / loading states */
+        .rev-state-row td {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        /* Fee note */
+        .rev-fee-note {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .rev-item-name { max-width: 140px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">⚒ CraftMander</a>
+    <a href="index.html">Explorer</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="revenue.html" class="active">Revenue</a>
+	<a href="libraries.html">Libraries</a>
+    <a href="help.html">Help</a>
+</nav>
+
+<div class="page">
+    <h1>Revenue Calculator</h1>
+    <p class="page-subtitle">
+        Ranks your craftable watchlist items by Trading Post revenue — based on your current materials.
+        Prices are live from the GW2 API and net of the 15% TP fee.
+    </p>
+
+    <div class="rev-toolbar">
+        <button class="primary" id="revFetchBtn">
+            <span id="revFetchIcon">↻</span> Fetch Prices &amp; Recalculate
+        </button>
+        <span class="rev-fetch-status" id="revFetchStatus">Load your materials via the ⚡ API panel, then fetch prices.</span>
+    </div>
+
+    <div class="rev-table-wrap">
+        <table class="rev-table" id="revTable">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="rev-th-eff">GW2E</th>
+                    <th class="sortable" data-col="qty" id="thQty">
+                        Qty Craftable <span class="sort-arrow" id="arrowQty"></span>
+                    </th>
+                    <th class="sortable" data-col="instant" id="thInstant">
+                        Instant Sell (net) <span class="sort-arrow" id="arrowInstant">▼</span>
+                    </th>
+                    <th class="sortable" data-col="list" id="thList">
+                        List &amp; Wait (net) <span class="sort-arrow" id="arrowList"></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="revTableBody">
+                <tr class="rev-state-row">
+                    <td colspan="4">No data yet — load materials and fetch prices.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="rev-fee-note">
+        Prices net of GW2 Trading Post fees: 5% listing fee + 10% sales tax = 15% total.
+        Instant Sell uses the highest active buy order; List &amp; Wait uses the lowest active sell listing.
+    </p>
+</div>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="crafting.js"></script>
+<script src="watchlist.js"></script>
+<script src="revenue.js"></script>
+<script src="api-panel.js"></script>
+</body>
+</html>

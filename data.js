@@ -94,6 +94,134 @@ function clearMaterialCache() {
     sessionStorage.removeItem(CACHE_KEY_API_KEY);
 }
 
+// ── Price cache (sessionStorage) ──────────────────────────────────────────────
+// Prices are cached separately from materials — they don't require an API key
+// and are keyed by a sorted, comma-joined string of the requested item IDs.
+// If the watchlist changes, the ID string won't match and a fresh fetch occurs.
+
+const CACHE_KEY_PRICES    = "CraftManderPrices";
+const CACHE_KEY_PRICE_IDS = "CraftManderPriceIDs";   // the ID set the cache covers
+const CACHE_KEY_PRICE_TS  = "CraftManderPriceFetchedAt";
+
+const GW2_PRICES_URL = "https://api.guildwars2.com/v2/commerce/prices";
+const PRICE_BATCH    = 200;
+
+/**
+ * Stable string key representing a set of item IDs — used to detect watchlist changes.
+ */
+function priceIdKey(itemIds) {
+    return [...itemIds].sort((a, b) => a - b).join(",");
+}
+
+/**
+ * Restore prices from sessionStorage into CraftMander.prices.
+ *
+ * A cache hit is declared when the cached ID set is a superset of the
+ * requested IDs — i.e. every price we need is already stored, even if the
+ * watchlist has shrunk since the last fetch. This means removing items from
+ * the watchlist never invalidates the price cache.
+ *
+ * Returns { fetchedAt } on a cache hit, else null.
+ */
+function restorePriceCache(itemIds) {
+    try {
+        const cachedIdKey = sessionStorage.getItem(CACHE_KEY_PRICE_IDS);
+        if (!cachedIdKey) return null;
+
+        const raw = sessionStorage.getItem(CACHE_KEY_PRICES);
+        if (!raw) return null;
+
+        // Build a set from the cached ID string for O(1) membership checks.
+        const cachedIdSet = new Set(cachedIdKey.split(",").map(Number));
+
+        // Every requested ID must be present in the cache.
+        for (const id of itemIds) {
+            if (!cachedIdSet.has(id)) return null;
+        }
+
+        CraftMander.prices = JSON.parse(raw);
+        const fetchedAt    = new Date(sessionStorage.getItem(CACHE_KEY_PRICE_TS) || Date.now());
+        return { fetchedAt };
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Persist the current CraftMander.prices to sessionStorage.
+ */
+function savePriceCache(itemIds) {
+    try {
+        sessionStorage.setItem(CACHE_KEY_PRICE_IDS, priceIdKey(itemIds));
+        sessionStorage.setItem(CACHE_KEY_PRICES,    JSON.stringify(CraftMander.prices));
+        sessionStorage.setItem(CACHE_KEY_PRICE_TS,  new Date().toISOString());
+    } catch {
+        // quota exceeded — silently skip
+    }
+}
+
+/**
+ * Clear the price cache.
+ */
+function clearPriceCache() {
+    sessionStorage.removeItem(CACHE_KEY_PRICES);
+    sessionStorage.removeItem(CACHE_KEY_PRICE_IDS);
+    sessionStorage.removeItem(CACHE_KEY_PRICE_TS);
+}
+
+/**
+ * Fetch TP prices for the output items of every recipe on the watchlist.
+ *
+ * If `force` is false (default), a cached result for the same set of IDs is
+ * returned without hitting the network. Pass `force: true` when the user
+ * explicitly refreshes.
+ *
+ * Populates CraftMander.prices  →  { [itemId]: { buys, sells } }
+ * Returns { fetchedAt, fromCache } on success; throws on network error.
+ */
+async function loadPrices({ force = false } = {}) {
+    // Collect output item IDs from the current watchlist
+    const itemIds = [];
+    for (const recipeId of CraftMander.watchlist) {
+        const recipe = CraftMander.recipes.find(r => r.id === recipeId);
+        if (recipe) itemIds.push(recipe.output_item_id);
+    }
+
+if (itemIds.length === 0) {
+        CraftMander.prices = {};
+        return { fetchedAt: new Date(), fromCache: false };
+    }
+
+    // ── Cache hit ─────────────────────────────────────────────────────────
+    if (!force) {
+        const cached = restorePriceCache(itemIds);
+        if (cached !== null) {
+            console.log(`Restored prices for ${Object.keys(CraftMander.prices).length} items from cache.`);
+            return { fetchedAt: cached.fetchedAt, fromCache: true };
+        }
+    } else {
+        clearPriceCache();
+    }
+
+    // ── Cache miss — fetch from GW2 API in batches ────────────────────────
+    CraftMander.prices = {};
+
+    for (let i = 0; i < itemIds.length; i += PRICE_BATCH) {
+        const batch = itemIds.slice(i, i + PRICE_BATCH);
+        const res   = await fetch(`${GW2_PRICES_URL}?ids=${batch.join(",")}`);
+        if (!res.ok) throw new Error(`GW2 prices API returned ${res.status}`);
+        const data  = await res.json();
+        for (const entry of data) {
+            CraftMander.prices[entry.id] = entry;
+        }
+    }
+
+    savePriceCache(itemIds);
+    const fetchedAt = new Date();
+    console.log(`Fetched prices for ${Object.keys(CraftMander.prices).length} of ${itemIds.length} watchlist items.`);
+    return { fetchedAt, fromCache: false };
+}
+
 // Point this at your deployed Cloudflare Worker URL.
 // For local development with `wrangler dev`, use: "http://localhost:8787"
 const PROXY_URL = "https://gw2-proxy.strikingwolf26.workers.dev";
