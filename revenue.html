@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){var t=localStorage.getItem('CraftManderTheme');if(t&&t!=='commander')document.documentElement.setAttribute('data-theme',t);})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CraftMander — Revenue</title>
     <link rel="stylesheet" href="style.css">
@@ -205,7 +206,7 @@
 <body>
 
 <nav>
-    <a class="nav-brand" href="index.html">⚒ CraftMander</a>
+    <a class="nav-brand shimmer-eligible" href="index.html">⚒ CraftMander</a>
     <a href="explorer.html">Explorer</a>
     <a href="dashboard.html">Dashboard</a>
     <a href="revenue.html" class="active">Revenue</a>
@@ -214,7 +215,7 @@
 </nav>
 
 <div class="page">
-    <h1>Revenue Calculator</h1>
+    <h1 class="shimmer-eligible">Revenue Calculator</h1>
     <p class="page-subtitle">
         Ranks your craftable watchlist items by Trading Post revenue — based on your current materials.
         Prices are live from the GW2 API and net of the 15% TP fee.
@@ -263,5 +264,6 @@
 <script src="watchlist.js"></script>
 <script src="revenue.js"></script>
 <script src="api-panel.js"></script>
+<script src="theme-panel.js"></script>
 </body>
 </html>

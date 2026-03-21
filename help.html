@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){var t=localStorage.getItem('CraftManderTheme');if(t&&t!=='commander')document.documentElement.setAttribute('data-theme',t);})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CraftMander — Help</title>
     <link rel="stylesheet" href="style.css">
@@ -362,7 +363,7 @@
 <body>
 
 <nav>
-    <a class="nav-brand" href="index.html">⚒ CraftMander</a>
+    <a class="nav-brand shimmer-eligible" href="index.html">⚒ CraftMander</a>
     <a href="explorer.html">Explorer</a>
     <a href="dashboard.html">Dashboard</a>
     <a href="revenue.html">Revenue</a>
@@ -371,7 +372,7 @@
 </nav>
 
 <div class="page">
-    <h1>Help &amp; Documentation</h1>
+    <h1 class="shimmer-eligible">Help &amp; Documentation</h1>
     <p class="page-subtitle">Everything you need to get started with CraftMander.</p>
 
     <div class="help-grid">
@@ -938,5 +939,6 @@
 
     sections.forEach(s => observer.observe(s));
 </script>
+<script src="theme-panel.js"></script>
 </body>
 </html>

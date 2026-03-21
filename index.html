@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){var t=localStorage.getItem('CraftManderTheme');if(t&&t!=='commander')document.documentElement.setAttribute('data-theme',t);})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CraftMander — GW2 Crafting Intelligence</title>
     <link rel="stylesheet" href="style.css">
@@ -508,7 +509,7 @@
 <body>
 
 <nav>
-    <a class="nav-brand" href="index.html">⚒ CraftMander</a>
+    <a class="nav-brand shimmer-eligible" href="index.html">⚒ CraftMander</a>
     <a href="explorer.html">Explorer</a>
     <a href="dashboard.html">Dashboard</a>
     <a href="revenue.html">Revenue</a>
@@ -519,7 +520,7 @@
 <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
 <header class="hero">
     <p class="hero-eyebrow">Guild Wars 2 Crafting Intelligence</p>
-    <h1 class="hero-title">Know What You Can<br><span class="accent-word">Craft Right Now.</span></h1>
+    <h1 class="hero-title shimmer-eligible">Know What You Can<br><span class="accent-word">Craft Right Now.</span></h1>
     <div class="hero-divider"></div>
     <p class="hero-tagline">
         CraftMander connects to your GW2 account and shows you — in real time — which recipes
@@ -761,5 +762,6 @@
         observer.observe(el);
     });
 </script>
+<script src="theme-panel.js"></script>
 </body>
 </html>

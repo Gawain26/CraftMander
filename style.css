@@ -1159,3 +1159,597 @@ li.tree-item:hover { background: var(--surface2); }
         to   { opacity: 1; transform: translateY(0); }
     }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THEME SYSTEM
+   All themes override the CSS variables defined in :root.
+   Applied via data-theme attribute on <html> by theme-panel.js.
+   Default (no attribute) = Commander theme.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. DARK ────────────────────────────────────────────────────────────── */
+/* Near-black navy. Same blue family as Commander, cranked to high contrast. */
+
+[data-theme="dark"] {
+    --bg:       #080b10;
+    --surface:  #0d1117;
+    --surface2: #121820;
+    --surface3: #182030;
+    --border:   #1e2d40;
+    --muted:    #3d5268;
+    --text:     #f0f4ff;
+    --text-dim: #c8d8ec;
+    --accent:   #66b8d8;
+    --accent2:  #3a6ea8;
+    --green:    #8dba74;
+    --red:      #c05560;
+    --gold:     #d8b870;
+}
+
+/* ── 2. ASCENDED ────────────────────────────────────────────────────────── */
+/* Dark charcoal/rose base. Hot-pink accents. Cool-white text. */
+
+[data-theme="ascended"] {
+    --bg:       #120d14;
+    --surface:  #1a1020;
+    --surface2: #221530;
+    --surface3: #2a1a3a;
+    --border:   #3d2048;
+    --muted:    #7a5080;
+    --text:     #fce8f4;
+    --text-dim: #e0b8d8;
+    --accent:   #fb3e8d;
+    --accent2:  #b02860;
+    --green:    #a8c880;
+    --red:      #e06070;
+    --gold:     #e8c070;
+}
+
+/* ── 3. LEGENDARY ───────────────────────────────────────────────────────── */
+/* Deep purple base. Violet accents. Warm purple-white text. */
+
+[data-theme="legendary"] {
+    --bg:       #0e0818;
+    --surface:  #150f28;
+    --surface2: #1c1438;
+    --surface3: #231a45;
+    --border:   #352060;
+    --muted:    #6848a0;
+    --text:     #ede5ff;
+    --text-dim: #c8b8ee;
+    --accent:   #9b6dff;
+    --accent2:  #6040c0;
+    --green:    #90c880;
+    --red:      #e06080;
+    --gold:     #e0c060;
+}
+
+/* ── 4. EXOTIC ──────────────────────────────────────────────────────────── */
+/* Dark aged-leather brown base. Amber-orange accents. Cream text. */
+
+[data-theme="exotic"] {
+    --bg:       #18100a;
+    --surface:  #221508;
+    --surface2: #2e1e0e;
+    --surface3: #3a2614;
+    --border:   #4e3218;
+    --muted:    #806040;
+    --text:     #fdebd0;
+    --text-dim: #e8c898;
+    --accent:   #ffa405;
+    --accent2:  #c07800;
+    --green:    #a8c870;
+    --red:      #d86050;
+    --gold:     #ffa405;
+}
+
+/* ── 5. PARCHMENT ───────────────────────────────────────────────────────── */
+/* Warm off-white. Sepia surfaces. Deep brown text. Ancient scroll aesthetic. */
+
+[data-theme="parchment"] {
+    --bg:       #f5edd8;
+    --surface:  #ede0c0;
+    --surface2: #e4d4a8;
+    --surface3: #d8c490;
+    --border:   #b09060;
+    --muted:    #907050;
+    --text:     #2a1808;
+    --text-dim: #4a3020;
+    --accent:   #8b3a10;
+    --accent2:  #6b2808;
+    --green:    #3a6820;
+    --red:      #a03020;
+    --gold:     #a07010;
+}
+
+[data-theme="parchment"] body {
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+}
+
+[data-theme="parchment"] .nav-brand,
+[data-theme="parchment"] h1,
+[data-theme="parchment"] h2,
+[data-theme="parchment"] h3 {
+    font-family: 'Cinzel', 'Georgia', serif;
+}
+
+[data-theme="parchment"] input[type="text"],
+[data-theme="parchment"] input[type="password"],
+[data-theme="parchment"] button {
+    font-family: 'Georgia', serif;
+}
+
+[data-theme="parchment"] li {
+    border-color: rgba(176, 144, 96, 0.4);
+}
+
+[data-theme="parchment"] .panel {
+    box-shadow: inset 0 0 40px rgba(100, 60, 20, 0.08);
+}
+
+[data-theme="parchment"] nav {
+    background: #e0d0a8;
+    border-bottom-color: #b09060;
+}
+
+[data-theme="parchment"] nav a:not(.nav-brand) {
+    color: #4a3020;
+}
+
+[data-theme="parchment"] nav a.active {
+    background: #8b3a10;
+    color: #fdebd0;
+}
+
+/* ── 6. HIGH CONTRAST ───────────────────────────────────────────────────── */
+/* Pure white. Near-black text. Monospace everywhere. WCAG AA target. */
+
+[data-theme="highcontrast"] {
+    --bg:       #ffffff;
+    --surface:  #f4f4f4;
+    --surface2: #e8e8e8;
+    --surface3: #d8d8d8;
+    --border:   #404040;
+    --muted:    #606060;
+    --text:     #0a0a0a;
+    --text-dim: #202020;
+    --accent:   #0050a0;
+    --accent2:  #003880;
+    --green:    #006020;
+    --red:      #a00020;
+    --gold:     #806000;
+}
+
+[data-theme="highcontrast"] body {
+    font-family: 'Courier New', 'Courier', 'Lucida Console', monospace;
+}
+
+[data-theme="highcontrast"] .nav-brand,
+[data-theme="highcontrast"] h1,
+[data-theme="highcontrast"] h2,
+[data-theme="highcontrast"] h3 {
+    font-family: 'Courier New', 'Courier', monospace;
+    letter-spacing: 0.02em;
+}
+
+[data-theme="highcontrast"] input[type="text"],
+[data-theme="highcontrast"] input[type="password"],
+[data-theme="highcontrast"] button {
+    font-family: 'Courier New', 'Courier', monospace;
+}
+
+[data-theme="highcontrast"] nav {
+    background: #f4f4f4;
+    border-bottom: 2px solid #0a0a0a;
+}
+
+[data-theme="highcontrast"] nav a:not(.nav-brand) {
+    color: #0a0a0a;
+}
+
+[data-theme="highcontrast"] nav a.active {
+    background: #0050a0;
+    color: #ffffff;
+}
+
+[data-theme="highcontrast"] .panel {
+    border: 2px solid #404040;
+}
+
+[data-theme="highcontrast"] li {
+    border: 1px solid #606060;
+}
+
+[data-theme="highcontrast"] button {
+    border: 2px solid #404040;
+}
+
+[data-theme="highcontrast"] .badge.craftable {
+    background: #d4f0d4;
+    color: #006020;
+    border: 1px solid #006020;
+}
+
+[data-theme="highcontrast"] .badge.not-craftable {
+    background: #f0d4d4;
+    color: #a00020;
+    border: 1px solid #a00020;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LEGENDARY SHIMMER
+   Applied to .shimmer-eligible elements only when legendary theme is active.
+   Slow, low-opacity — never overpowers reading zones.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes legendaryShimmer {
+    0%   { background-position: 0%   50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0%   50%; }
+}
+
+[data-theme="legendary"] .shimmer-eligible {
+    background-image: linear-gradient(
+        135deg,
+        #9b6dff 0%,
+        #c084fc 20%,
+        #60a5fa 40%,
+        #a78bfa 60%,
+        #f0abfc 80%,
+        #9b6dff 100%
+    );
+    background-size: 300% 300%;
+    animation: legendaryShimmer 5s ease infinite;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* Badges need a wrapper approach since background-clip: text
+   conflicts with background-color. Use border shimmer instead. */
+[data-theme="legendary"] .badge.craftable,
+[data-theme="legendary"] .badge.not-craftable,
+[data-theme="legendary"] .badge.on-list {
+    animation: legendaryBorderShimmer 5s ease infinite;
+    background: rgba(155, 109, 255, 0.15);
+    color: #ede5ff;
+}
+
+@keyframes legendaryBorderShimmer {
+    0%   { border-color: #9b6dff; }
+    25%  { border-color: #c084fc; }
+    50%  { border-color: #60a5fa; }
+    75%  { border-color: #f0abfc; }
+    100% { border-color: #9b6dff; }
+}
+
+[data-theme="legendary"] .serial-count.all {
+    animation: legendaryBorderShimmer 5s ease infinite;
+    color: #ede5ff;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THEME PANEL CHROME
+   Fixed neutral dark slate — never inherits theme variables.
+   Immune to all theme switches.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.theme-panel {
+    position: fixed;
+    right: 0;
+    top: 75%;
+    transform: translateY(-50%);
+    z-index: 200;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.theme-panel-tab {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 8px;
+    background: #1a1f2e;
+    border: 1px solid #2e3a4a;
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    color: #8899aa;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    box-shadow: -2px 0 12px rgba(0,0,0,0.25);
+    transform: none;
+    font-size: 0.85rem;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.theme-panel-tab:hover {
+    background: #232a3a;
+    color: #aabbcc;
+    border-color: #3a5068;
+    transform: none;
+}
+
+.theme-panel-tab-icon {
+    font-size: 1rem;
+    line-height: 1;
+    writing-mode: horizontal-tb;
+}
+
+.theme-panel-tab-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+}
+
+.theme-panel-body {
+    width: 220px;
+    background: #1a1f2e;
+    border: 1px solid #2e3a4a;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.35);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: themePanelSlideIn 0.2s ease forwards;
+}
+
+@keyframes themePanelSlideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.theme-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #2e3a4a;
+}
+
+.theme-panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #8899aa;
+}
+
+.theme-panel-close {
+    background: transparent;
+    color: #8899aa;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.18s ease, background 0.18s ease;
+    transform: none;
+    font-family: inherit;
+}
+
+.theme-panel-close:hover {
+    color: #aabbcc;
+    background: #232a3a;
+    transform: none;
+}
+
+.theme-panel.collapsed .theme-panel-body {
+    display: none;
+}
+
+/* ── Theme pill swatches ─────────────────────────────────────────────────── */
+
+.theme-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.theme-pill {
+    border-radius: 999px;
+    padding: 7px 18px;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-width: 2px;
+    border-style: solid;
+    transition: filter 0.15s ease, box-shadow 0.15s ease;
+    line-height: 1.2;
+}
+
+.theme-pill:hover {
+    filter: brightness(1.12);
+    transform: none;
+}
+
+.theme-pill.active {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Per-pill hardcoded values — no variable inheritance */
+
+.theme-pill-commander {
+    background: #2e3440;
+    border-color: #88c0d0;
+    color: #eceff4;
+    font-family: 'Cinzel', 'Georgia', serif;
+}
+
+.theme-pill-dark {
+    background: #0a0d12;
+    border-color: #5e9ecf;
+    color: #e8f0ff;
+    font-family: 'Cinzel', 'Georgia', serif;
+}
+
+.theme-pill-ascended {
+    background: #1e1520;
+    border-color: #fb3e8d;
+    color: #fce4f0;
+    font-family: 'Cinzel', 'Georgia', serif;
+}
+
+.theme-pill-legendary {
+    background: #1a0f2e;
+    border-color: #9b6dff;
+    color: #ede5ff;
+    font-family: 'Cinzel', 'Georgia', serif;
+    animation: legendaryPillShimmer 5s ease infinite;
+}
+
+@keyframes legendaryPillShimmer {
+    0%   { border-color: #9b6dff; }
+    25%  { border-color: #c084fc; }
+    50%  { border-color: #60a5fa; }
+    75%  { border-color: #f0abfc; }
+    100% { border-color: #9b6dff; }
+}
+
+.theme-pill-exotic {
+    background: #2a1e14;
+    border-color: #ffa405;
+    color: #fdebd0;
+    font-family: 'Cinzel', 'Georgia', serif;
+}
+
+.theme-pill-parchment {
+    background: #f0e8d0;
+    border-color: #8b5e3c;
+    color: #3d2b1f;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-style: italic;
+}
+
+.theme-pill-highcontrast {
+    background: #ffffff;
+    border-color: #0a0a0a;
+    color: #0a0a0a;
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 0.76rem;
+    letter-spacing: -0.01em;
+}
+
+/* ── Responsive: bottom-anchored on narrow screens ───────────── */
+
+@media (max-width: 600px) {
+    .theme-panel {
+        top: auto;
+        bottom: 48px;
+        right: 16px;
+        transform: none;
+        flex-direction: column-reverse;
+        align-items: flex-end;
+    }
+
+    .theme-panel-tab {
+        writing-mode: horizontal-tb;
+        border-radius: 6px 6px 0 0;
+        border-right: 1px solid #2e3a4a;
+        border-bottom: none;
+        flex-direction: row;
+        padding: 8px 14px;
+        gap: 8px;
+    }
+
+    .theme-panel-body {
+        border-radius: 10px 10px 0 0;
+        border-right: 1px solid #2e3a4a;
+        border-bottom: none;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THEME FIXES
+   Append these rules after the existing theme system CSS in style.css.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Fix 1: Brighten Ascended & Legendary base text ────────────────────── */
+
+[data-theme="ascended"] {
+    --text:     #fdf0f8;
+    --text-dim: #edcae2;
+}
+
+[data-theme="legendary"] {
+    --text:     #f5f0ff;
+    --text-dim: #d8ccf8;
+}
+
+/* ── Fix 2: Disable rarity colors on Parchment & High Contrast ─────────── */
+/* Rarity yellows, pinks, and purples are illegible on light backgrounds.   */
+/* Reset all rarity-coded names to the theme's standard text color.         */
+
+[data-theme="parchment"] .rarity-junk,
+[data-theme="parchment"] .rarity-basic,
+[data-theme="parchment"] .rarity-fine,
+[data-theme="parchment"] .rarity-masterwork,
+[data-theme="parchment"] .rarity-rare,
+[data-theme="parchment"] .rarity-exotic,
+[data-theme="parchment"] .rarity-ascended,
+[data-theme="parchment"] .rarity-legendary {
+    color: var(--text-dim);
+}
+
+[data-theme="highcontrast"] .rarity-junk,
+[data-theme="highcontrast"] .rarity-basic,
+[data-theme="highcontrast"] .rarity-fine,
+[data-theme="highcontrast"] .rarity-masterwork,
+[data-theme="highcontrast"] .rarity-rare,
+[data-theme="highcontrast"] .rarity-exotic,
+[data-theme="highcontrast"] .rarity-ascended,
+[data-theme="highcontrast"] .rarity-legendary {
+    color: var(--text);
+}
+
+/* ── Fix 3: Fully isolate theme panel from page font overrides ──────────── */
+/* Parchment and High Contrast override body font-family, which bleeds into  */
+/* the panel pills despite explicit font declarations, because body-level     */
+/* specificity beats class-level in some cascade orders. Force all pill       */
+/* fonts with !important to guarantee isolation regardless of active theme.   */
+
+.theme-pill-commander {
+    font-family: 'Cinzel', 'Georgia', serif !important;
+}
+
+.theme-pill-dark {
+    font-family: 'Cinzel', 'Georgia', serif !important;
+}
+
+.theme-pill-ascended {
+    font-family: 'Cinzel', 'Georgia', serif !important;
+}
+
+.theme-pill-legendary {
+    font-family: 'Cinzel', 'Georgia', serif !important;
+}
+
+.theme-pill-exotic {
+    font-family: 'Cinzel', 'Georgia', serif !important;
+}
+
+.theme-pill-parchment {
+    font-family: 'Georgia', 'Times New Roman', serif !important;
+    font-style: italic !important;
+}
+
+.theme-pill-highcontrast {
+    font-family: 'Courier New', 'Courier', monospace !important;
+}
+
+/* Also lock the panel chrome title and close button against font bleed */
+.theme-panel-title,
+.theme-panel-close,
+.theme-panel-tab-label {
+    font-family: 'Cinzel', serif !important;
+}
