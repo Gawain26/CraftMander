@@ -3,49 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CraftMander — Libraries</title>
+    <title>CraftMander — Explorer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav>
     <a class="nav-brand" href="index.html">⚒ CraftMander</a>
-    <a href="explorer.html">Explorer</a>
+    <a href="explorer.html" class="active">Explorer</a>
     <a href="dashboard.html">Dashboard</a>
     <a href="revenue.html">Revenue</a>
-    <a href="libraries.html" class="active">Libraries</a>
+    <a href="libraries.html">Libraries</a>
     <a href="help.html">Help</a>
 </nav>
 
 <div class="page">
-    <h1>Libraries</h1>
-    <p class="page-subtitle">Curated recipe sets — add or remove whole groups at once.</p>
+    <h1>Recipe Explorer</h1>
+    <p class="page-subtitle">Search for recipes and add them to your watchlist.</p>
 
-    <div class="layout layout-3col">
+    <div class="layout layout-2col">
 
-        <!-- Left: library list -->
         <div class="panel">
             <div class="panel-header">
-                <h2>Collections</h2>
+                <h2>Search Recipes</h2>
             </div>
-            <ul id="libraryList"></ul>
-        </div>
-
-        <!-- Middle: library preview -->
-        <div class="panel">
-            <div class="panel-header">
-                <h2 id="libraryTitle">Select a collection</h2>
-            </div>
-            <div id="libraryActions"></div>
-            <ul id="libraryRecipes">
-                <li class="empty-state">Choose a collection on the left.</li>
+            <input
+                type="text"
+                id="recipeSearch"
+                placeholder="Type an item name…"
+                autocomplete="off"
+                autofocus
+            >
+            <ul id="searchResults">
+                <li class="empty-state">Start typing to search recipes.</li>
             </ul>
         </div>
 
-        <!-- Right: current watchlist -->
         <div class="panel">
             <div class="panel-header">
-                <h2>My Watchlist</h2>
+                <h2>Watchlist</h2>
                 <button id="clearWatchlistBtn" class="clear-watchlist-btn" title="Clear entire watchlist">🗑</button>
             </div>
             <ul id="explorerWatchlist"></ul>
@@ -58,7 +54,7 @@
 <script src="data.js"></script>
 <script src="crafting.js"></script>
 <script src="watchlist.js"></script>
-<script src="libraries.js"></script>
+<script src="search.js"></script>
 <script src="api-panel.js"></script>
 </body>
 </html>
