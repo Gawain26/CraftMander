@@ -53,8 +53,12 @@ function canCraftItem(itemId, inv, wallet, memo = {}) {
         }
 
         if (ok) {
-            return true;
-        }
+			const outputCount = recipe.output_item_count || 1;
+			if (outputCount > 1) {
+				inv[itemId] = (inv[itemId] || 0) + (outputCount - 1);
+			}
+			return true;
+		}
 
         // This recipe path failed — restore both snapshots and try the next recipe.
         Object.assign(inv, invSnapshot);
@@ -97,7 +101,7 @@ function computeCraftables() {
         const recipe = CraftMander.recipes.find(r => r.id === recipeId);
         if (!recipe) continue;
 
-        results[recipe.output_item_id] = countCraftable(recipe.output_item_id);
+        results[recipe.output_item_id] = countCraftable(recipe.output_item_id, recipe.output_item_count);
     }
 
     return results;
